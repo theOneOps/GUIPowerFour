@@ -226,3 +226,58 @@ def bestPositionFunc(canvas: Canvas, width: int, height: int, tokens: int,
         update_game_state(canvas, getRandomPosition(tab, width, height)[0],
                           getRandomPosition(tab, width, height)[1], 0, botColor,
                           width, height, tokens)
+
+
+def reverseBoard(canvas: Canvas, height: int, width: int, humanColor: str,
+                 botColor: str) -> None:
+    global stack
+    global tab
+    stack = refresh_stack_for_reversed_board(stack, height)
+    tab = refresh_grid_for_reversed_board(tab, height)
+    tab = refresh_grid_for_reversed_boardSecond(tab,height)
+    modifyBoard(canvas, height, width, humanColor,
+                botColor)
+
+def rotate_canvas(canvas: Canvas) -> None:
+    canvas.after(100,
+                 lambda: canvas.rotate(180))  # Rotate canvas after 100 ms
+
+def refresh_stack_for_reversed_board(pile: StackPos_t,
+                                     height: int) -> StackPos_t:
+    refreshed_stack = []
+    for position in pile:
+        row, col = position
+        refreshed_row = height - 1 - row  # Calculate the new row on the reversed board
+        refreshed_stack.append([refreshed_row, col])
+    return refreshed_stack
+
+
+def refresh_grid_for_reversed_board(grid: Grid_t, height:int) -> Grid_t:
+    return grid[::-1]
+
+def modifyBoard(canvas: Canvas, height: int, width: int, humanColor: str,
+                botColor: str) -> None:
+    global tab
+    for row in range(height):
+        for col in range(width):
+            if tab[row][col] == -1:
+                canvas.itemconfig(f"circle_{row}_{col}",
+                                  fill="white")
+            elif tab[row][col] == 1:
+                canvas.itemconfig(f"circle_{row}_{col}",
+                                  fill=f"{humanColor}")
+            else:
+                canvas.itemconfig(f"circle_{row}_{col}",
+                               fill=f"{botColor}")
+
+def refresh_grid_for_reversed_boardSecond(grid: Grid_t, height: int) -> Grid_t:
+    reversed_grid = [[-1] * len(grid[0]) for _ in range(height)]
+
+    for col in range(len(grid[0])):
+        filled_row = height - 1
+        for row in range(height - 1, -1, -1):
+            if grid[row][col] != -1:
+                reversed_grid[filled_row][col] = grid[row][col]
+                filled_row -= 1
+
+    return reversed_grid

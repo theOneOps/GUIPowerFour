@@ -251,6 +251,8 @@ def defineGamePlay(window) -> Frame:
             labelReverseBoardCount.config(text=f"used: {ReverseTrump}")
             print("Reverse the "
                   "board")
+            reverseBoard(gridTab, height, width, HUMAN_COLOR, BOT_COLOR)
+
         elif string == "best":
             BestPositionTrump += 1
             labelBestPosCount.config(text=f"used: {BestPositionTrump}")
@@ -258,6 +260,7 @@ def defineGamePlay(window) -> Frame:
                   "launched")
             bestPositionFunc(gridTab, width, height, nb_tokens, HUMAN_COLOR,
                              BOT_COLOR)
+
         else:
             ComeBackTrump += 1
             labelComeBackCount.config(text=f"used: {ComeBackTrump}")
