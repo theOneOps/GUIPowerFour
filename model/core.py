@@ -22,7 +22,6 @@ def finishRangeHorizontal(player: int, posx: int, posy: int, tab: Grid_t,
     x = posx
     y = posy
     count = 0
-    print(f"le nombre de tokens est de : {nb_tokens}")
     for i in range(x - nb_tokens - 1, x + nb_tokens):
         if valid_coord(i, y, width, height):
             if tab[i][y] == player:
@@ -32,7 +31,6 @@ def finishRangeHorizontal(player: int, posx: int, posy: int, tab: Grid_t,
         if count == nb_tokens:
             break
     return True if count == nb_tokens else False
-
 
 
 # vérifier si un quintuplet en vertical(si nb_tokens == 5) est atteint
@@ -161,7 +159,8 @@ def getRandomPosition(tab: Grid_t, height: int, width: int) -> Pos_t:
     for i in range(height):
         for j in range(width):
             if tab[i][j] == -1:
-                return (i, j)
+                return [i, j]
+    return None
 
 
 # à faire...
@@ -173,7 +172,7 @@ def getRandomPosition(tab: Grid_t, height: int, width: int) -> Pos_t:
 def launchGame(tab: Grid_t, width: int, height: int, tourJeu: int, tokens:
 int, pile: StackPos_t, finishGame: bool, thePos: Pos_t) -> bool:
     res: bool = True
-    print(f"tour de jeu: {tourJeu}")
+
     if tourJeu % 2 == 0:
         res = play_human(tab, humanValue, thePos, pile, finishGame, tokens,
                          width,
@@ -181,10 +180,12 @@ int, pile: StackPos_t, finishGame: bool, thePos: Pos_t) -> bool:
     else:
         res = play_bot(tab, botValue, pile, finishGame, tokens, width, height,
                        thePos)
+    print(f"tour de jeu: {tourJeu} | finishGame : {res}")
+
     return res
 
 
-def peek(stack: StackPos_t)->Pos_t:
+def peek(stack: StackPos_t) -> Pos_t:
     if not stack:
         return None  # Retourne None si la pile est vide
     return stack[-1]
