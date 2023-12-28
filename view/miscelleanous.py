@@ -163,8 +163,7 @@ def update_game_state(canvas: Canvas, row: int, col: int, player: int,
                     break
         else:
             messagebox.showinfo("match nul", "pas de gagnant")
-    else:
-        messagebox.showinfo("fin du jeu", "on a déjà un gagnant !")
+            return
 
 
 def fill_cell(canvas, row, col, humanColor: str, botColor: str, height: int,
@@ -183,11 +182,13 @@ def fill_cell(canvas, row, col, humanColor: str, botColor: str, height: int,
         messagebox.showinfo("fin du jeu", "on a déjà un gagnant !")
         return
 
-    if finishG:
-        update_game_state(canvas, getRandomPosition(tab, width, height)[0],
-                          getRandomPosition(tab, width, height)[1], 0, botColor,
-                          width, height, tokens)
-        tourJeu += 1
+    if tourJeu % 2 != 0:
+        if finishG:
+            position = getRandomPosition(tab, width, height)
+            if position is not None:
+                update_game_state(canvas, position[0], position[1], 0, botColor,
+                                  width, height, tokens)
+                tourJeu += 1
 
 
 def comeBackFunc(canvas: Canvas) -> None:
@@ -218,15 +219,21 @@ def bestPositionFunc(canvas: Canvas, width: int, height: int, tokens: int,
         update_game_state(canvas, getRandomPosition(tab, width, height)[0],
                           getRandomPosition(tab, width, height)[1], 1,
                           humanColor, width, height, tokens)
+        tourJeu += 1
     else:
         messagebox.showinfo("fin du jeu", "on a déjà un gagnant !")
         return
 
-    if finishG:
-        update_game_state(canvas, getRandomPosition(tab, width, height)[0],
-                          getRandomPosition(tab, width, height)[1], 0, botColor,
-                          width, height, tokens)
 
+    if tourJeu % 2 != 0:
+        if finishG:
+            position = getRandomPosition(tab, width, height)
+            if position is not None:
+                update_game_state(canvas, position[0], position[1], 0, botColor,
+                                  width, height, tokens)
+            else:
+                # Handle the case when getRandomPosition returns None
+                print("Error: getRandomPosition returned None")
 
 def reverseBoard(canvas: Canvas, height: int, width: int, humanColor: str,
                  botColor: str) -> None:
@@ -238,9 +245,6 @@ def reverseBoard(canvas: Canvas, height: int, width: int, humanColor: str,
     modifyBoard(canvas, height, width, humanColor,
                 botColor)
 
-def rotate_canvas(canvas: Canvas) -> None:
-    canvas.after(100,
-                 lambda: canvas.rotate(180))  # Rotate canvas after 100 ms
 
 def refresh_stack_for_reversed_board(pile: StackPos_t,
                                      height: int) -> StackPos_t:
