@@ -231,9 +231,6 @@ def bestPositionFunc(canvas: Canvas, width: int, height: int, tokens: int,
             if position is not None:
                 update_game_state(canvas, position[0], position[1], 0, botColor,
                                   width, height, tokens)
-            else:
-                # Handle the case when getRandomPosition returns None
-                print("Error: getRandomPosition returned None")
 
 def reverseBoard(canvas: Canvas, height: int, width: int, humanColor: str,
                  botColor: str) -> None:

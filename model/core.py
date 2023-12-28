@@ -22,7 +22,7 @@ def finishRangeHorizontal(player: int, posx: int, posy: int, tab: Grid_t,
     x = posx
     y = posy
     count = 0
-    for i in range(x - nb_tokens - 1, x + nb_tokens):
+    for i in range(x - nb_tokens + 1, x + nb_tokens):
         if valid_coord(i, y, width, height):
             if tab[i][y] == player:
                 count += 1
@@ -40,9 +40,9 @@ def finishRangeVertical(player: int, posx: int, posy: int, tab: Grid_t,
     x = posx
     y = posy
     count = 0
-    for i in range(y - nb_tokens - 1, y + nb_tokens):
-        if valid_coord(i, y, width, height):
-            if tab[i][y] == player:
+    for i in range(y - nb_tokens + 1, y + nb_tokens):
+        if valid_coord(x, i, width, height):
+            if tab[x][i] == player:
                 count += 1
             else:
                 count = 0
@@ -58,7 +58,7 @@ def finishRangeHautGauche(player: int, posx: int, posy: int, tab: Grid_t,
     x = posx
     y = posy - nb_tokens - 1
     count = 0
-    for i in range(x - nb_tokens - 1, x + nb_tokens):
+    for i in range(x - nb_tokens + 1, x + nb_tokens):
         if valid_coord(i, y, width, height):
             if tab[i][y] == player:
                 count += 1
@@ -77,7 +77,7 @@ def finishRangeBasGauche(player: int, posx: int, posy: int, tab: Grid_t,
     x = posx
     y = posy + nb_tokens - 1
     count = 0
-    for i in range(x - nb_tokens - 1, x + nb_tokens):
+    for i in range(x - nb_tokens + 1, x + nb_tokens):
         if valid_coord(i, y, width, height):
             if tab[i][y] == player:
                 count += 1
