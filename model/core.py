@@ -72,7 +72,7 @@ def finish_range_haut_gauche(
     height: int,
 ) -> bool:
     x: int = posx
-    y: int = posy - nb_tokens - 1
+    y: int = posy - nb_tokens + 1
     count: int = 0
     for i in range(x - nb_tokens + 1, x + nb_tokens):
         if valid_coord(i, y, width, height):
