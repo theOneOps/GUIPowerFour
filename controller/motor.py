@@ -1,18 +1,16 @@
-from view.miscelleanous import *
 import view.view as vue
+from view.miscelleanous import *
 
 # globals' variables
 WINDOWWIDTH: int = 300
 WINDOWHEIGHT: int = 530
 PINK: str = "#F8E5E5"
 
-from PIL import Image
 
-
-def initGame():
+def init_game():
     window = Tk()
     window.minsize(width=WINDOWWIDTH, height=WINDOWHEIGHT)
-    gameConfigFrame = vue.initConfigFrame(window)
+    game_config_frame = vue.init_config_frame(window)
 
     # Calculate the position of the window on the screen
     screen_width = window.winfo_screenwidth()
@@ -31,5 +29,3 @@ def initGame():
     window.title("Power 4 ++")
 
     window.mainloop()
-
-

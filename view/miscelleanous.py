@@ -15,24 +15,44 @@ PINK: str = "#F8E5E5"
 frameWidth: int = 100
 frameHeight: int = 50
 framePad: int = 10
-CELL_SIZE = 40
+CELL_SIZE: int = 40
 
 WINDOWWIDTH: int = 300
 WINDOWHEIGHT: int = 530
 
 
-def defineSpinBox(frameparent: Frame, func, from_: int,
-                  to: int, col: int, row: int, valueVar: IntVar, wrap_:
-        bool = True) -> Spinbox:
-    spin = Spinbox(frameparent, from_=from_, to=to, wrap=wrap_, width=5,
-                   command=func, textvariable=valueVar)
+def define_spinbox(
+    frameparent: Frame,
+    func,
+    from_: int,
+    to: int,
+    col: int,
+    row: int,
+    value_var: IntVar,
+    wrap_: bool = True,
+) -> Spinbox:
+    spin = Spinbox(
+        frameparent,
+        from_=from_,
+        to=to,
+        wrap=wrap_,
+        width=5,
+        command=func,
+        textvariable=value_var,
+    )
     spin.grid(column=col, row=row)
     return spin
 
 
-def defineFrame(root: Tk, col: int, row: int,
-                h: int = frameHeight, w: int = frameWidth,
-                pad: int = framePad, columnspan: bool = False) -> Frame:
+def define_frame(
+    root: Tk,
+    col: int,
+    row: int,
+    h: int = frameHeight,
+    w: int = frameWidth,
+    pad: int = framePad,
+    columnspan: bool = False,
+) -> Frame:
     frame = Frame(root, height=h, width=w, bg=PINK)
     frame.config(padx=pad, pady=pad)
 
@@ -43,11 +63,18 @@ def defineFrame(root: Tk, col: int, row: int,
     return frame
 
 
-def defineLabel(parent, text: str, fontSize: int,
-                col: int, row: int, columnspan: bool,
-                fill: str = "black") -> Label:
-    label = Label(parent, text=text, font=("arial", fontSize, "bold"), bg=PINK,
-                  fg=fill)
+def define_label(
+    parent,
+    text: str,
+    font_size: int,
+    col: int,
+    row: int,
+    columnspan: bool,
+    fill: str = "black",
+) -> Label:
+    label = Label(
+        parent, text=text, font=("arial", font_size, "bold"), bg=PINK, fg=fill
+    )
     if columnspan:
         label.grid(column=col, row=row, columnspan=2)
     else:
@@ -55,34 +82,43 @@ def defineLabel(parent, text: str, fontSize: int,
     return label
 
 
-def defineEntry(parent, width: int, string: str,
-                col: int, row: int, disable: bool = True) -> Entry:
+def define_entry(parent, width: int, string: str, col: int, row: int) -> Entry:
     entry: Entry = Entry(parent, width=width)
-    # if disable:
-    #     entry.config(state="disabled")
     entry.insert(END, string=string)
     entry.grid(column=col, row=row)
 
     return entry
 
 
-def defineRadio(parent, function, string: str, variable: IntVar,
-                value: int, col: int, row: int) -> Radiobutton:
-    radioBtn: Radiobutton = Radiobutton(parent, text=string, variable=variable,
-                                        value=value,
-                                        bg=PINK,
-                                        command=lambda: function(variable))
-    radioBtn.grid(column=col, row=row)
-    return radioBtn
+def define_radio(
+    parent, function, string: str, variable: IntVar, value: int, col: int, row: int
+) -> Radiobutton:
+    radio_btn: Radiobutton = Radiobutton(
+        parent,
+        text=string,
+        variable=variable,
+        value=value,
+        bg=PINK,
+        command=lambda: function(variable),
+    )
+    radio_btn.grid(column=col, row=row)
+    return radio_btn
 
 
 # function for the radioButton's function (This will change later)
-def changeRadioValue(value: IntVar):
+def change_radio_value(value: IntVar):
     print(value.get())
 
 
-def defineButton(parent, function, string: str, col: int, row: int,
-                 columnspan: bool = False, width: int = 5) -> Button:
+def define_button(
+    parent,
+    function,
+    string: str,
+    col: int,
+    row: int,
+    columnspan: bool = False,
+    width: int = 5,
+) -> Button:
     btn: Button = Button(parent, text=string, command=function, width=width)
     if columnspan:
         btn.grid(column=col, row=row, columnspan=2, pady=20)
@@ -91,9 +127,15 @@ def defineButton(parent, function, string: str, col: int, row: int,
     return btn
 
 
-def createBoard(parent, width: int, height: int, cell_size: int, humanColor:
-str, botColor: str, tokens: int) -> (
-        Canvas):
+def create_board(
+    parent,
+    width: int,
+    height: int,
+    cell_size: int,
+    human_color: str,
+    bot_color: str,
+    tokens: int,
+) -> Canvas:
     global tab
     global stack
     global nbSquareFilled
@@ -106,37 +148,57 @@ str, botColor: str, tokens: int) -> (
     tab = [[-1 for _ in range(height)] for _ in range(width)]
     stack = []
     # Create circles and labels
-    X = 0
-    Y = 0
-    canvas: Canvas = Canvas(parent, width=width * cell_size,
-                            height=height * cell_size,
-                            borderwidth=0, highlightthickness=0)
+    x: int = 0
+    y: int = 0
+    canvas: Canvas = Canvas(
+        parent,
+        width=width * cell_size,
+        height=height * cell_size,
+        borderwidth=0,
+        highlightthickness=0,
+    )
 
     for row in range(height):
         for col in range(width):
-            x1 = X
-            y1 = Y
-            x2 = X + cell_size
-            y2 = Y + cell_size
+            x1 = x
+            y1 = y
+            x2 = x + cell_size
+            y2 = y + cell_size
 
-            circle = canvas.create_oval(x1, y1, x2, y2, outline="black",
-                                        fill="white",
-                                        tags=f"circle_{row}_{col}")
+            circle = canvas.create_oval(
+                x1,
+                y1,
+                x2,
+                y2,
+                outline="black",
+                fill="white",
+                tags=f"circle_{row}_{col}",
+            )
             # bind the circle with the fill's function so that If I click on a oval, it fill in
             # black or whatever color that I choose
-            canvas.tag_bind(circle, "<Button-1>", lambda event, r=row,
-                                                         c=col: fill_cell(
-                canvas, r, c, humanColor, botColor,
-                height, width, tokens))
-            X += cell_size
-        X = 0
-        Y += cell_size
+            canvas.tag_bind(
+                circle,
+                "<Button-1>",
+                lambda event, c=col: fill_cell(
+                    canvas, c, human_color, bot_color, height, width, tokens
+                ),
+            )
+            x += cell_size
+        x = 0
+        y += cell_size
 
     return canvas
 
 
-def update_game_state(canvas: Canvas, row: int, col: int, player: int,
-                      color: str, width: int, height: int, tokens: int) -> None:
+def update_game_state(
+    canvas: Canvas,
+    col: int,
+    player: int,
+    color: str,
+    width: int,
+    height: int,
+    tokens: int,
+) -> None:
     global tab
     global nbSquareFilled
     global tourJeu
@@ -149,9 +211,15 @@ def update_game_state(canvas: Canvas, row: int, col: int, player: int,
                 if tab[row][col] == -1:
                     tab[row][col] = player
                     stack.append([row, col])
-                    finishG = launchGame(tab, width, height, tourJeu=tourJeu,
-                                         tokens=tokens, pile=stack,
-                                         finishGame=finishG, thePos=[row, col])
+                    finishG = launch_game(
+                        tab,
+                        width,
+                        height,
+                        tour_jeu=tourJeu,
+                        tokens=tokens,
+                        finishgame=finishG,
+                        the_pos=[row, col],
+                    )
                     canvas.itemconfig(f"circle_{row}_{col}", fill=color)
                     nbSquareFilled += 1
                     if not finishG:
@@ -166,8 +234,15 @@ def update_game_state(canvas: Canvas, row: int, col: int, player: int,
             return
 
 
-def fill_cell(canvas, row, col, humanColor: str, botColor: str, height: int,
-              width: int, tokens: int) -> None:
+def fill_cell(
+    canvas,
+    col,
+    human_color: str,
+    bot_color: str,
+    height: int,
+    width: int,
+    tokens: int,
+) -> None:
     global tab
     global nbSquareFilled
     global tourJeu
@@ -175,8 +250,7 @@ def fill_cell(canvas, row, col, humanColor: str, botColor: str, height: int,
     global finishG
 
     if finishG:
-        update_game_state(canvas, row, col, 1, humanColor, width, height,
-                          tokens)
+        update_game_state(canvas, col, 1, human_color, width, height, tokens)
         tourJeu += 1
     else:
         messagebox.showinfo("fin du jeu", "on a déjà un gagnant !")
@@ -184,31 +258,37 @@ def fill_cell(canvas, row, col, humanColor: str, botColor: str, height: int,
 
     if tourJeu % 2 != 0:
         if finishG:
-            position = getRandomPosition(tab, width, height)
+            position = get_random_position(tab, width, height)
             if position is not None:
-                update_game_state(canvas, position[0], position[1], 0, botColor,
-                                  width, height, tokens)
+                update_game_state(
+                    canvas, position[1], 0, bot_color, width, height, tokens
+                )
                 tourJeu += 1
 
 
-def comeBackFunc(canvas: Canvas) -> None:
+def come_back_func(canvas: Canvas) -> None:
     global stack
     global tourJeu
     global nbSquareFilled
     global finishG
-    oldPosition = peek(stack)
-    if oldPosition is not None:
-        canvas.itemconfig(f"circle_{oldPosition[0]}_{oldPosition[1]}",
-                          fill="white")
-        tab[oldPosition[0]][oldPosition[1]] = -1
+    old_position: Pos_t = peek(stack)
+    if old_position is not None:
+        canvas.itemconfig(f"circle_{old_position[0]}_{old_position[1]}", fill="white")
+        tab[old_position[0]][old_position[1]] = -1
         stack.pop()
         tourJeu -= 1
         nbSquareFilled -= 1
         finishG = True
 
 
-def bestPositionFunc(canvas: Canvas, width: int, height: int, tokens: int,
-                     humanColor: str, botColor: str) -> None:
+def best_position_func(
+    canvas: Canvas,
+    width: int,
+    height: int,
+    tokens: int,
+    human_color: str,
+    bot_color: str,
+) -> None:
     global tab
     global nbSquareFilled
     global tourJeu
@@ -216,62 +296,41 @@ def bestPositionFunc(canvas: Canvas, width: int, height: int, tokens: int,
     global finishG
 
     if finishG:
-        update_game_state(canvas, getRandomPosition(tab, width, height)[0],
-                          getRandomPosition(tab, width, height)[1], 1,
-                          humanColor, width, height, tokens)
+        update_game_state(
+            canvas,
+            get_random_position(tab, width, height)[1],
+            1,
+            human_color,
+            width,
+            height,
+            tokens,
+        )
         tourJeu += 1
     else:
         messagebox.showinfo("fin du jeu", "on a déjà un gagnant !")
         return
 
-
     if tourJeu % 2 != 0:
         if finishG:
-            position = getRandomPosition(tab, width, height)
+            position = get_random_position(tab, width, height)
             if position is not None:
-                update_game_state(canvas, position[0], position[1], 0, botColor,
-                                  width, height, tokens)
+                update_game_state(
+                    canvas, position[1], 0, bot_color, width, height, tokens
+                )
 
-def reverseBoard(canvas: Canvas, height: int, width: int, humanColor: str,
-                 botColor: str) -> None:
+
+def reverse_board(
+    canvas: Canvas, height: int, width: int, humancolor: str, botcolor: str
+) -> None:
     global stack
     global tab
     stack = refresh_stack_for_reversed_board(stack, height)
     tab = refresh_grid_for_reversed_board(tab, height)
-    tab = refresh_grid_for_reversed_boardSecond(tab,height)
-    modifyBoard(canvas, height, width, humanColor,
-                botColor)
+    modify_board(canvas, height, width, humancolor, botcolor)
 
 
-def refresh_stack_for_reversed_board(pile: StackPos_t,
-                                     height: int) -> StackPos_t:
-    refreshed_stack = []
-    for position in pile:
-        row, col = position
-        refreshed_row = height - 1 - row  # Calculate the new row on the reversed board
-        refreshed_stack.append([refreshed_row, col])
-    return refreshed_stack
-
-
-def refresh_grid_for_reversed_board(grid: Grid_t, height:int) -> Grid_t:
-    return grid[::-1]
-
-def modifyBoard(canvas: Canvas, height: int, width: int, humanColor: str,
-                botColor: str) -> None:
-    global tab
-    for row in range(height):
-        for col in range(width):
-            if tab[row][col] == -1:
-                canvas.itemconfig(f"circle_{row}_{col}",
-                                  fill="white")
-            elif tab[row][col] == 1:
-                canvas.itemconfig(f"circle_{row}_{col}",
-                                  fill=f"{humanColor}")
-            else:
-                canvas.itemconfig(f"circle_{row}_{col}",
-                               fill=f"{botColor}")
-
-def refresh_grid_for_reversed_boardSecond(grid: Grid_t, height: int) -> Grid_t:
+def refresh_grid_for_reversed_board(grid: Grid_t, height: int) -> Grid_t:
+    grid = grid[::-1]
     reversed_grid = [[-1] * len(grid[0]) for _ in range(height)]
 
     for col in range(len(grid[0])):
@@ -282,3 +341,26 @@ def refresh_grid_for_reversed_boardSecond(grid: Grid_t, height: int) -> Grid_t:
                 filled_row -= 1
 
     return reversed_grid
+
+
+def refresh_stack_for_reversed_board(pile: StackPos_t, height: int) -> StackPos_t:
+    refreshed_stack = []
+    for position in pile:
+        row, col = position
+        refreshed_row = height - 1 - row  # Calculate the new row on the reversed board
+        refreshed_stack.append([refreshed_row, col])
+    return refreshed_stack
+
+
+def modify_board(
+    canvas: Canvas, height: int, width: int, human_color: str, bot_color: str
+) -> None:
+    global tab
+    for row in range(height):
+        for col in range(width):
+            if tab[row][col] == -1:
+                canvas.itemconfig(f"circle_{row}_{col}", fill="white")
+            elif tab[row][col] == 1:
+                canvas.itemconfig(f"circle_{row}_{col}", fill=f"{human_color}")
+            else:
+                canvas.itemconfig(f"circle_{row}_{col}", fill=f"{bot_color}")

@@ -1,5 +1,3 @@
-
 import controller.motor as game
 
-game.initGame()
-
+game.init_game()
