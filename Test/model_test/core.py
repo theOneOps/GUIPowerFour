@@ -108,6 +108,35 @@ class MyCoreTest(unittest.TestCase):
         self.assertTrue(play_human(grid, 1, [1, 1], True, 5, 5, 5))
         self.assertFalse(play_human(grid, 1, [0, 0], True, 5, 5, 5))
 
+    def test_peek(self):
+        stack1: StackPos_t = [[1, 2], [4, 5]]
+        stack2: StackPos_t = []
+        self.assertEqual(peek(stack1), [4, 5])
+        self.assertNotEqual(peek(stack1), [1, 2])
+        self.assertIsNone(peek(stack2))
+
+    def test_launch_game(self):
+        grid = [
+            [1, 0, 0, 1, 0],
+            [1, 1, 1, 0, 0],
+            [1, -1, 0, 0, 0],
+            [1, 0, 1, 0, 0],
+            [1, 1, 1, 0, 0],
+        ]
+        # testing the tourJeu value to match player's round
+
+        # human's tour
+        self.assertFalse(launch_game(grid, 5, 5, 8, 5, True, [0, 0]))
+        # bot's tour
+        self.assertFalse(launch_game(grid, 5, 5, 5, 5, True, [0, 4]))
+
+        # human's tour
+        self.assertTrue(launch_game(grid, 5, 5, 2, 5, True, [1, 1]))
+        # Bot's tour
+        self.assertTrue(launch_game(grid, 5, 5, 17, 5, True, [0, 1]))
+
+
+
 
 if __name__ == "__main__":
     unittest.main()
