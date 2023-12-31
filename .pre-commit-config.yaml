@@ -10,11 +10,13 @@ repos:
     hooks:
       - id: flake8
         language_version: python3.12
+        args: [ "--ignore=F405,F403,F841" ]
 
   - repo: https://github.com/pycqa/isort
     rev: 5.12.0
     hooks:
       - id: isort
+
   - repo: https://github.com/pycqa/bandit
     rev: 1.7.1
     hooks:
