@@ -1,7 +1,7 @@
 import unittest
 
 import model.core
-from type import StackPos_t
+from model.type import StackPos_t
 
 
 class MyCoreTest(unittest.TestCase):

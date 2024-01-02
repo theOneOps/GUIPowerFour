@@ -1,5 +1,5 @@
 import view.view as vue
-from view.miscelleanous import *
+from view.grid_view import *
 
 # globals' variables
 WINDOWWIDTH: int = 300

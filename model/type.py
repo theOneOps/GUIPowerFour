@@ -1,6 +1,7 @@
-# ------------------------------- DEBUT principles variables -------------------------------
+# -------------------- DEBUT principles variables ------------------
 
-# variables fictifs juste pour pouvoir définir les prototypes voir contenus de mes fonctions...
+# variables fictifs juste pour pouvoir définir les prototypes voir contenus
+# de mes fonctions...
 
 # principles types
 
@@ -14,6 +15,6 @@ StackPos_t = list[Pos_t]
 Grid_t = list[list[int]]
 
 # the dictionary would be use for trump
-# so for each trump(key), we will have acess to number of times it has been use by a player (user or bot)
+# so for each trump(key), we will have acess to number of times it has been
+# use by a player (user or bot)
 # Trump_t = {str: int}
-
