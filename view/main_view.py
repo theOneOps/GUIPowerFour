@@ -2,8 +2,8 @@ from tkinter.colorchooser import askcolor
 
 from PIL import Image, ImageTk
 
-from .grid_view import *
-from .widgets_utils import *
+from .grid_functions import *
+from .widgets_functions import *
 
 height: int = 5
 width: int = 5

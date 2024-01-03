@@ -1,4 +1,4 @@
-from .type import Grid_t, Pos_t
+from .game_types import Grid_t, Pos_t
 
 
 # à faire...

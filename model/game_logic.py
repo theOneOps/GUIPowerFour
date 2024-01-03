@@ -1,4 +1,4 @@
-from .type import Grid_t, Pos_t, StackPos_t
+from .game_types import Grid_t, Pos_t, StackPos_t
 
 humanValue: int = 1
 botValue: int = 0

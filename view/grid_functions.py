@@ -1,8 +1,8 @@
 from tkinter import *
 from tkinter import messagebox
 
-from model.core import *
-from model.minmax import *
+from model.bot_logic import *
+from model.game_logic import *
 
 # globals' variables
 
