@@ -160,17 +160,18 @@ def fill_cell(
     if tourJeu % 2 != 0:
         if finishG:
 
-            position = minimax_with_move(tab, depth, True, -math.inf,
-                                         math.inf, botValue, height, width,
-                                         nbSquareFilled,
-                                         tokens, stack)
+            position = minimax_with_move(tab, depth, True,
+                                         float('-inf'), float('inf'),
+                                         botValue, height, width, tokens,
+                                         nbSquareFilled, stack)
             print(f"stack  :  {stack}")
             print(f"grid  :  {tab}")
             print(f"score {position[0]} |position joué par le bot : "
                   f" {position[1]}")
             if position[1] is not None:
                 update_game_state(
-                    canvas, position[1][1], 0, bot_color, width, height, tokens
+                    canvas, position[1][1], 0, bot_color, width, height,
+                    tokens
                 )
                 tourJeu += 1
 
