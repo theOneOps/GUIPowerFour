@@ -1,3 +1,4 @@
+import math
 from tkinter import *
 from tkinter import messagebox
 
@@ -26,6 +27,7 @@ def create_board(
         bot_color: str,
         tokens: int,
         padding: int = 5,  # Adjust this value for padding
+        depth: int = 4,
 ) -> Canvas:
     global tab
     global stack
@@ -75,7 +77,8 @@ def create_board(
                 circle,
                 "<Button-1>",
                 lambda event, c=col: fill_cell(
-                    canvas, c, human_color, bot_color, height, width, tokens
+                    canvas, c, human_color, bot_color, height, width, tokens,
+                    depth
                 ),
             )
             x += cell_size + padding
@@ -139,6 +142,7 @@ def fill_cell(
         height: int,
         width: int,
         tokens: int,
+        depth: int,
 ) -> None:
     global tab
     global nbSquareFilled
@@ -155,10 +159,18 @@ def fill_cell(
 
     if tourJeu % 2 != 0:
         if finishG:
-            position = get_random_position(tab, width, height)
-            if position is not None:
+
+            position = minimax_with_move(tab, depth, True, -math.inf,
+                                         math.inf, botValue, height, width,
+                                         nbSquareFilled,
+                                         tokens, stack)
+            print(f"stack  :  {stack}")
+            print(f"grid  :  {tab}")
+            print(f"score {position[0]} |position joué par le bot : "
+                  f" {position[1]}")
+            if position[1] is not None:
                 update_game_state(
-                    canvas, position[1], 0, bot_color, width, height, tokens
+                    canvas, position[1][1], 0, bot_color, width, height, tokens
                 )
                 tourJeu += 1
 
@@ -186,6 +198,7 @@ def best_position_func(
         tokens: int,
         human_color: str,
         bot_color: str,
+        depth: int,
 ) -> None:
     global tab
     global nbSquareFilled
@@ -194,9 +207,13 @@ def best_position_func(
     global finishG
 
     if finishG:
+        pos = minimax_with_move(tab, depth, True, -math.inf,
+                                math.inf, botValue, height, width,
+                                nbSquareFilled,
+                                tokens, stack)[1]
         update_game_state(
             canvas,
-            get_random_position(tab, width, height)[1],
+            pos[1],
             1,
             human_color,
             width,
@@ -210,10 +227,13 @@ def best_position_func(
 
     if tourJeu % 2 != 0:
         if finishG:
-            position = get_random_position(tab, width, height)
-            if position is not None:
+            pos = minimax_with_move(tab, depth, True, -math.inf,
+                                    math.inf, botValue, height, width,
+                                    nbSquareFilled,
+                                    tokens, stack)[1]
+            if pos is not None:
                 update_game_state(
-                    canvas, position[1], 0, bot_color, width, height, tokens
+                    canvas, pos[1], 0, bot_color, width, height, tokens
                 )
 
 

@@ -188,3 +188,47 @@ def peek(stack: StackPos_t) -> Pos_t:
     if not stack:
         return None  # Retourne None si la pile est vide
     return stack[-1]
+
+
+# def minimax_with_move(grid, depth, is_maximizing_player, alpha, beta, player,
+#                       height, width, nbsquarefilled):
+#     if depth == 0 or match_null(height, width, nbsquarefilled):
+#         return -1, None
+#
+#     if is_maximizing_player:
+#         max_eval = float('-inf')
+#         best_move = None
+#         for child in get_possible_positions(grid, height, width, player):
+#             eval, _ = minimax_with_move(child[0], depth - 1, False,
+#                                         alpha, beta,
+#                                         player, height,
+#                                         width, nbsquarefilled)
+#             if eval > max_eval:
+#                 max_eval = eval
+#                 best_move = child[1]  # Or however you determine
+#                 the move from
+#                 # the child state
+#             alpha = max(alpha, eval)
+#             if beta <= alpha:
+#                 break
+#         return max_eval, best_move
+#     else:
+#         min_eval = float('inf')
+#         best_move = None
+#         for child in get_possible_positions(grid, height, width, player):
+#             eval, _ = minimax_with_move(child[0], depth - 1,
+#             True, alpha, beta,
+#                                         player, height,
+#                                         width, nbsquarefilled)
+#             if eval < min_eval:
+#                 min_eval = eval
+#                 best_move = child[1]  # Or however you
+#                 determine the move from
+#                 # the child state
+#             beta = min(beta, eval)
+#             if beta <= alpha:
+#                 break
+#         return min_eval, best_move
+
+def get_last_move():
+    return None

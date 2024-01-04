@@ -8,7 +8,7 @@ from .widgets_functions import *
 height: int = 5
 width: int = 5
 nb_tokens: int = 5
-level = 1
+level = 5
 BOT_COLOR = "red"
 HUMAN_COLOR = "yellow"
 ComeBackTrump: int = 0
@@ -334,7 +334,7 @@ def define_game_play(window) -> Frame:
 
     grid_tab: Canvas = create_board(
         gamePlay, width, height, CELL_SIZE, HUMAN_COLOR, BOT_COLOR,
-        tokens=nb_tokens
+        tokens=nb_tokens, depth=level
     )
     grid_tab.grid(row=3, column=0, columnspan=2)
 
@@ -380,7 +380,8 @@ def define_game_play(window) -> Frame:
             label_best_pos_count.config(text=f"used: {BestPositionTrump}")
             print("best Position " "launched")
             best_position_func(
-                grid_tab, width, height, nb_tokens, HUMAN_COLOR, BOT_COLOR
+                grid_tab, width, height, nb_tokens, HUMAN_COLOR, BOT_COLOR,
+                depth=level
             )
 
         else:
