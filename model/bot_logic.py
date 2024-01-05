@@ -1,4 +1,13 @@
+"""
+@package model
+@file: bot_logic.py
+@desc: This file contains all the funtions to determine
+the best move for the bot
+
+"""
+
 import copy
+import secrets
 
 from .game_logic import peek
 from .game_types import Grid_t, Pos_t, StackPos_t
@@ -6,10 +15,22 @@ from .game_types import Grid_t, Pos_t, StackPos_t
 
 def get_random_position(tab: Grid_t, height: int,
                         width: int) -> Pos_t:
+    """
+    @brief get a random position in the grid
+    :param tab: the 2D array representing the grid
+    :param height: the height of the grid
+    :param width: the width of the grid
+    :return: the random position among the empty positions unless None
+    """
+    l: StackPos_t = []
     for i in range(height):
         for j in range(width):
             if tab[i][j] == -1:
-                return [i, j]
+                l.append([i, j])
+
+    if len(l) != 0:
+        x = secrets.randbelow(len(l))
+        return l[x]
     return None
 
 

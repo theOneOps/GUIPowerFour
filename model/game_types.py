@@ -1,4 +1,5 @@
 """
+@package model
 @file game_types.py
 @desc This file contains the special types that are created
 and used in the game
