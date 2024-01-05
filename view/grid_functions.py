@@ -52,7 +52,7 @@ def create_board(
         depth: int = 4,
 ) -> Canvas:
     """
-    Create a canvas with a grid of circles
+    @brief Create a canvas with a grid of circles
     :param parent: the parent of the canvas
     :param width: the width of the board
     :param height: the height of the board
@@ -238,7 +238,7 @@ def fill_cell(
             # get the best position for the bot
             position = minimax_with_move(tab, depth, True,
                                          float('-inf'), float('inf'),
-                                         botValue, height, width, tokens,
+                                         BOTVALUE, height, width, tokens,
                                          nbSquareFilled, stack)
             print(f"stack  :  {stack}")
             print(f"grid  :  {tab}")
@@ -312,7 +312,7 @@ def best_position_func(
     if finishG:
         pos = minimax_with_move(tab, depth, True,
                                 float('-inf'),
-                                float('inf'), botValue, height, width,
+                                float('inf'), BOTVALUE, height, width,
                                 nbSquareFilled,
                                 tokens, stack)[1]
 
@@ -336,7 +336,7 @@ def best_position_func(
         if finishG:
             pos = minimax_with_move(tab, depth, True,
                                     float('-inf'),
-                                    float('inf'), botValue, height, width,
+                                    float('inf'), BOTVALUE, height, width,
                                     nbSquareFilled,
                                     tokens, stack)[1]
             if pos is not None:
