@@ -2,7 +2,7 @@
 @package model
 @file: bot_logic.py
 @desc: This file contains all the funtions to determine
-the best move for the bot
+the best move for the bot or the random move's one
 
 """
 
@@ -36,7 +36,15 @@ def get_random_position(tab: Grid_t, height: int,
 
 
 def get_possible_positions(tab: Grid_t, height: int, width: int,
-                           player: int) -> list:
+                           player: int) -> [list, list]:
+    """
+    @brief get all possible positions that could be play for a player
+    :param tab: a 2D array representing the grid
+    :param height: the height of the grid
+    :param width: the width of the grid
+    :param player: the player to check (0 or 1)
+    :return:
+    """
     possible_positions = []  # list of grid, to get all possible
     # positions played for a player
     positions_play = []  # list of all positions played
@@ -69,17 +77,46 @@ def get_possible_positions(tab: Grid_t, height: int, width: int,
 
 
 def match_null(height: int, width: int, nbsquarefilled: int) -> bool:
+    """
+    @brief check if the grid is full
+    :param height: the height of the grid
+    :param width: the width of the grid
+    :param nbsquarefilled: the number of square filled
+    :return: True if the grid is full, False otherwise
+    """
     if height * width == nbsquarefilled:
         return True
     return False
 
 
-def evaluates(grid, player):
-    # This is a simple evaluation function that you can expand.
-    # Currently, it just counts the player's tokens.
+def evaluate(grid: Grid_t, player: int, max_player: int, max_length: int) \
+        -> int:
+    """
+    @brief evaluate the grid
+    :param grid: the 2D array representing the grid
+    :param player: the player to check (0 or 1)
+    :param max_player: the player to maximize
+    :param max_length: the maximum length of
+     a sequence (the number of tokens to check)
+    :return: return the score of the grid
+    """
+    score = 0
+    # Define weights for different sequence lengths
+    weights = {i: 10 * i for i in range(2, max_length + 1)}
 
-    player_tokens = sum(row.count(player) for row in grid)
-    return player_tokens
+    # Evaluate sequences of various lengths
+    for length in range(2, max_length + 1):
+        score += evaluate_horizontal(grid, player, length) * weights[length]
+        score += evaluate_vertical(grid, player, length) * weights[length]
+        score += evaluate_diagonal(grid, player, length) * weights[length]
+        # Add evaluations for vertical, diagonal (both directions) here with
+        # same length
+
+    # Adjust the score for the minimizing player
+    if not max_player:
+        score *= -1
+
+    return score
 
 
 def minimax_with_move(grid: Grid_t, depth: int, is_maximizing_player: int,
@@ -87,10 +124,25 @@ def minimax_with_move(grid: Grid_t, depth: int, is_maximizing_player: int,
                       height: int, width: int, nb_tokens: int,
                       nb_square_filled: int,
                       stack: StackPos_t):
+    """
+    @brief minimax algorithm with alpha-beta pruning
+    :param grid: the 2D array representing the grid
+    :param depth: the depth of the tree
+    :param is_maximizing_player: the player to maximize
+    :param alpha: the alpha value
+    :param beta: the beta value
+    :param player: the player to check (0 or 1)
+    :param height: the height of the grid
+    :param width: the width of the grid
+    :param nb_tokens: the number of tokens to check
+    :param nb_square_filled: the number of square filled
+    :param stack: the stack of positions played
+    :return: the best move
+    """
     fst = peek(stack)
     if depth == 0 or match_null(height, width,
                                 nb_square_filled):
-        return evaluates(grid, player), None
+        return evaluate(grid, player, is_maximizing_player, nb_tokens), fst
 
     best_move = None
 
@@ -134,27 +186,14 @@ def minimax_with_move(grid: Grid_t, depth: int, is_maximizing_player: int,
         return min_eval, best_move
 
 
-def evaluate(grid, player, max_player, max_length):
-    score = 0
-    # Define weights for different sequence lengths
-    weights = {i: 10 * i for i in range(2, max_length + 1)}
-
-    # Evaluate sequences of various lengths
-    for length in range(2, max_length + 1):
-        score += evaluate_horizontal(grid, player, length) * weights[length]
-        score += evaluate_vertical(grid, player, length) * weights[length]
-        score += evaluate_diagonal(grid, player, length) * weights[length]
-        # Add evaluations for vertical, diagonal (both directions) here with
-        # same length
-
-    # Adjust the score for the minimizing player
-    if not max_player:
-        score *= -1
-
-    return score
-
-
-def evaluate_horizontal(grid, player, length):
+def evaluate_horizontal(grid: Grid_t, player: int, length: int) -> int:
+    """
+    @brief evaluate the grid in horizontal
+    :param grid: the 2D array representing the grid
+    :param player: the player to check (0 or 1)
+    :param length: the length of the sequence (the number of tokens to check)
+    :return: the score of the sequence
+    """
     count = 0
     for row in grid:
         for i in range(len(row) - length + 1):
@@ -169,7 +208,14 @@ def evaluate_horizontal(grid, player, length):
     return count
 
 
-def evaluate_vertical(grid, player, length):
+def evaluate_vertical(grid: Grid_t, player: int, length: int) -> int:
+    """
+    @brief evaluate the grid in vertical
+    :param grid: the 2D array representing the grid
+    :param player: the player to check (0 or 1)
+    :param length: the length of the sequence (the number of tokens to check)
+    :return: the score of the sequence
+    """
     count = 0
     for col in range(len(grid[0])):
         for i in range(len(grid) - length + 1):
@@ -184,7 +230,14 @@ def evaluate_vertical(grid, player, length):
     return count
 
 
-def evaluate_diagonal(grid, player, length):
+def evaluate_diagonal(grid: Grid_t, player: int, length: int) -> int:
+    """
+    @brief evaluate the grid in diagonal
+    :param grid: the 2D array representing the grid
+    :param player: the player to check (0 or 1)
+    :param length: the length of the sequence (the number of tokens to check)
+    :return: the score of the sequence
+    """
     count = 0
     for col in range(len(grid[0]) - length + 1):
         for row in range(len(grid) - length + 1):
