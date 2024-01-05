@@ -1,4 +1,12 @@
-import math
+"""
+@file grid_functions.py
+@description This file contains all the functions that are used to create the
+grid and to fill it in
+@details This file contains all the functions that are used to play on the
+board, and all trumps functions (come back, best position, reverse board)
+
+"""
+
 from tkinter import *
 from tkinter import messagebox
 
@@ -7,14 +15,28 @@ from model.game_logic import *
 
 # globals' variables
 
+## the grid variable : it's a 2D array that contains the value of each cell of
+# the grid
 tab: Grid_t
+## the nbSquareFilled variable : it's an int that indicates the number of cell
+# filled in the grid
 nbSquareFilled: int
+## the tourJeu variable : it's an int that indicates the number of turn to play
 tourJeu: int
+## the stack variable : it's a stack that contains all positions played during
+# the game
 stack: StackPos_t
+## the finishG variable : it's a boolean that indicates if the game is over
+# or not
 finishG: bool
-CELL_SIZE: int = 40
 
+# constants variables
+
+## the cell size : it's the size of each cell of the grid
+CELL_SIZE: int = 40
+## the window's width
 WINDOWWIDTH: int = 300
+## the window's height
 WINDOWHEIGHT: int = 530
 
 
@@ -29,6 +51,19 @@ def create_board(
         padding: int = 5,  # Adjust this value for padding
         depth: int = 4,
 ) -> Canvas:
+    """
+    Create a canvas with a grid of circles
+    :param parent: the parent of the canvas
+    :param width: the width of the board
+    :param height: the height of the board
+    :param cell_size: the size of each cell of the board
+    :param human_color: the color of the human player
+    :param bot_color: the color of the bot player
+    :param tokens: the number of tokens to align to win
+    :param padding: the padding of the board and for each cell of the board
+    :param depth: the depth of the minimax algorithm
+    :return: the canvas
+    """
     global tab
     global stack
     global nbSquareFilled
@@ -38,6 +73,7 @@ def create_board(
     nbSquareFilled = 0
     tourJeu = 0
     finishG = True
+    # Create a 2D array to store the circles
     tab = [[-1 for _ in range(width)] for _ in range(height)]
     stack = []
 
@@ -70,8 +106,8 @@ def create_board(
             )
 
             # bind the circle with the fill's function so that
-            # If I click on a oval, it fill in
-            # black or whatever color that I choose
+            # If I click on a circle, it fills in
+            # black or whatever color that the human chooses
 
             canvas.tag_bind(
                 circle,
@@ -97,18 +133,35 @@ def update_game_state(
         height: int,
         tokens: int,
 ) -> None:
+    """
+    @brief This function update the game state
+    :param canvas: the canvas where the game is played on
+    :param col: the column where the player has played
+    :param player: variable for the player who plays | 1 for the human | 0 for
+    the bot
+    :param color: the color of the player
+    :param width: the width of the board
+    :param height: the height of the board
+    :param tokens: the number of tokens to align to win
+    :return: None
+    """
     global tab
     global nbSquareFilled
     global tourJeu
     global stack
     global finishG
 
+    # If the game is not over
     if finishG:
+        # if there is still a place to play
         if nbSquareFilled < height * width:
             for row in range(height - 1, -1, -1):
+                # if the cell is empty
                 if tab[row][col] == -1:
                     tab[row][col] = player
+                    # add the position to the stack
                     stack.append([row, col])
+                    # check if the game is over (if there is a winner)
                     finishG = launch_game(
                         tab,
                         width,
@@ -118,9 +171,13 @@ def update_game_state(
                         finishgame=finishG,
                         the_pos=[row, col],
                     )
+                    # fill the cell with the color of the player
                     canvas.itemconfig(f"circle_{row}_{col}", fill=color)
+                    # increment the number of cell filled
                     nbSquareFilled += 1
+                    # if the game is over
                     if not finishG:
+                        # if the player is the human
                         if player == 1:
                             messagebox.showinfo("victoire",
                                                 "Vous avez gagné !")
@@ -129,6 +186,8 @@ def update_game_state(
                                                 "Le bot a gagné !")
                         return
                     break
+
+        # if there is no place to play
         else:
             messagebox.showinfo("match nul", "pas de gagnant")
             return
@@ -144,22 +203,39 @@ def fill_cell(
         tokens: int,
         depth: int,
 ) -> None:
+    """
+    @brief This function fill the cell
+    :param canvas: the canvas where the game is played on
+    :param col: the column where the player has played
+    :param human_color: the color of the human player
+    :param bot_color: the color of the bot player
+    :param height: the height of the game's board
+    :param width: the width of the game's board
+    :param tokens: the number of tokens to align to win
+    :param depth: the depth of the minimax algorithm
+    :return: None
+    """
     global tab
     global nbSquareFilled
     global tourJeu
     global stack
     global finishG
 
+    # if the game is not over
     if finishG:
+        # if there is still a place to play
         update_game_state(canvas, col, 1, human_color, width, height, tokens)
         tourJeu += 1
     else:
         messagebox.showinfo("fin du jeu", "on a déjà un gagnant !")
         return
 
+    # if it's the bot's turn
     if tourJeu % 2 != 0:
+        # if the game is not over
         if finishG:
 
+            # get the best position for the bot
             position = minimax_with_move(tab, depth, True,
                                          float('-inf'), float('inf'),
                                          botValue, height, width, tokens,
@@ -168,27 +244,42 @@ def fill_cell(
             print(f"grid  :  {tab}")
             print(f"score {position[0]} |position joué par le bot : "
                   f" {position[1]}")
+            # if the position is not None
             if position[1] is not None:
+                # actualize the game's board with the bot's position
                 update_game_state(
                     canvas, position[1][1], 0, bot_color, width, height,
                     tokens
                 )
+                # increment the number of turn for the next player: the human
                 tourJeu += 1
 
 
 def come_back_func(canvas: Canvas) -> None:
+    """
+    @brief This function come back to the previous position
+    :param canvas:  the canvas where the game is played on
+    :return: None
+    """
     global stack
     global tourJeu
     global nbSquareFilled
     global finishG
+    # get the last position played
     old_position: Pos_t = peek(stack)
+
     if old_position is not None:
+        # we actualize the game's board by deleting the last position played
         canvas.itemconfig(f"circle_{old_position[0]}_{old_position[1]}",
                           fill="white")
         tab[old_position[0]][old_position[1]] = -1
+        # we delete the last position played from the stack
         stack.pop()
         tourJeu -= 1
+        # we decrement the number of cell filled
         nbSquareFilled -= 1
+        # we actualize the game's state by setting the game's state to True
+        # so that the game can continue even if the game was over
         finishG = True
 
 
@@ -201,6 +292,17 @@ def best_position_func(
         bot_color: str,
         depth: int,
 ) -> None:
+    """
+    @brief This function get the best position for the bot
+    :param canvas: the canvas where the game is played on
+    :param width: the width of the game's board
+    :param height: the height of the game's board
+    :param tokens: the number of tokens to align to win
+    :param human_color: the color of the human player
+    :param bot_color: the color of the bot player
+    :param depth: the depth of the minimax algorithm
+    :return: None
+    """
     global tab
     global nbSquareFilled
     global tourJeu
@@ -208,10 +310,13 @@ def best_position_func(
     global finishG
 
     if finishG:
-        pos = minimax_with_move(tab, depth, True, -math.inf,
-                                math.inf, botValue, height, width,
+        pos = minimax_with_move(tab, depth, True,
+                                float('-inf'),
+                                float('inf'), botValue, height, width,
                                 nbSquareFilled,
                                 tokens, stack)[1]
+
+        # update the game's board with the best position for the human
         update_game_state(
             canvas,
             pos[1],
@@ -226,10 +331,12 @@ def best_position_func(
         messagebox.showinfo("fin du jeu", "on a déjà un gagnant !")
         return
 
+    # the bot's turn
     if tourJeu % 2 != 0:
         if finishG:
-            pos = minimax_with_move(tab, depth, True, -math.inf,
-                                    math.inf, botValue, height, width,
+            pos = minimax_with_move(tab, depth, True,
+                                    float('-inf'),
+                                    float('inf'), botValue, height, width,
                                     nbSquareFilled,
                                     tokens, stack)[1]
             if pos is not None:
@@ -241,16 +348,37 @@ def best_position_func(
 def reverse_board(
         canvas: Canvas, height: int, width: int, humancolor: str, botcolor: str
 ) -> None:
+    """
+    @brief This function reverse the board
+    :param canvas: the canvas where the game is played on
+    :param height: the height of the game's board
+    :param width: the width of the game's board
+    :param humancolor: the color of the human player
+    :param botcolor: the color of the bot player
+    :return: None
+    """
     global stack
     global tab
+    # we reverse the stack
     stack = refresh_stack_for_reversed_board(stack, height)
+    # we reverse the grid
     tab = refresh_grid_for_reversed_board(tab, height)
+    # we actualize the game's board based on the reversed grid
     modify_board(canvas, height, width, humancolor, botcolor)
 
 
 def refresh_grid_for_reversed_board(grid: Grid_t, height: int) -> Grid_t:
+    """
+    @brief This function refresh the grid for the reversed board
+    :param grid: the grid to refresh
+    :param height: the height of the game's board
+    :return: the reversed grid
+    """
     grid = grid[::-1]
+    # we create a new grid that will be the reversed grid
     reversed_grid = [[-1] * len(grid[0]) for _ in range(height)]
+    # we push the values of the grid in the reversed grid at the bottom of
+    # each column of the grid... hence the start at the bottom of the grid
 
     for col in range(len(grid[0])):
         filled_row = height - 1
@@ -264,6 +392,13 @@ def refresh_grid_for_reversed_board(grid: Grid_t, height: int) -> Grid_t:
 
 def refresh_stack_for_reversed_board(pile: StackPos_t,
                                      height: int) -> StackPos_t:
+    """
+    @brief This function refresh the stack for the reversed board
+    :param pile: the stack to refresh
+    :param height: the height of the game's board
+    :return: the reversed stack
+    """
+    # we create a new stack that will be the reversed stack
     refreshed_stack = []
     for position in pile:
         row, col = position
@@ -277,6 +412,15 @@ def modify_board(
         canvas: Canvas, height: int, width: int, human_color: str,
         bot_color: str
 ) -> None:
+    """
+    @brief This function modify the game's board
+    :param canvas: the canvas where the game is played on
+    :param height: the height of the game's board
+    :param width: the width of the game's board
+    :param human_color: the color of the human player
+    :param bot_color: the color of the bot player
+    :return: None
+    """
     global tab
     for row in range(height):
         for col in range(width):
