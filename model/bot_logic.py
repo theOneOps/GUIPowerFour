@@ -1,3 +1,6 @@
+## @file: bot_logic.py
+## This file contains all the funtions to determine the best move for the bot
+## or the random move's one
 """
 @package model
 @file: bot_logic.py
@@ -9,7 +12,7 @@ the best move for the bot or the random move's one
 import copy
 import secrets
 
-from .game_logic import peek
+from .game_logic import peek, finish_range_in_all_directions
 from .game_types import Grid_t, Pos_t, StackPos_t
 
 
@@ -33,47 +36,6 @@ def get_random_position(tab: Grid_t, height: int,
         x = secrets.randbelow(len(l))
         return l[x]
     return None
-
-
-def get_possible_positions(tab: Grid_t, height: int, width: int,
-                           player: int) -> [list, list]:
-    """
-    @brief get all possible positions that could be play for a player
-    :param tab: a 2D array representing the grid
-    :param height: the height of the grid
-    :param width: the width of the grid
-    :param player: the player to check (0 or 1)
-    :return:
-    """
-    possible_positions = []  # list of grid, to get all possible
-    # positions played for a player
-    positions_play = []  # list of all positions played
-
-    for i in range(width):
-        # if the column is empty
-        if tab[i][height - 1] == -1:
-            copie_grid = copy.deepcopy(tab)
-            copie_grid[i][height - 1] = player
-            possible_positions.append(copie_grid)
-            positions_play.append([i, height - 1])
-
-        # if the column is full
-        elif tab[i][0] != -1:
-            pass
-
-        # if the column is not full and empty either...
-        else:
-            copie_grid = copy.deepcopy(tab)
-            k: int = height - 1
-            while k != -1:
-                if copie_grid[i][k] == -1:
-                    copie_grid[i][k] = player
-                    possible_positions.append(copie_grid)
-                    positions_play.append([i, k])
-                    break
-                k -= 1
-
-    return possible_positions, positions_play
 
 
 def match_null(height: int, width: int, nbsquarefilled: int) -> bool:
@@ -102,14 +64,14 @@ def evaluate(grid: Grid_t, player: int, max_player: int, max_length: int) \
     """
     score = 0
     # Define weights for different sequence lengths
-    weights = {i: 10 * i for i in range(2, max_length + 1)}
+    weights = {i: 10 * i for i in range(3, max_length + 1)}
 
     # Evaluate sequences of various lengths
-    for length in range(2, max_length + 1):
+    for length in range(3, max_length + 1):
         score += evaluate_horizontal(grid, player, length) * weights[length]
         score += evaluate_vertical(grid, player, length) * weights[length]
-        score += evaluate_diagonal(grid, player, length) * weights[length]
         # Add evaluations for vertical, diagonal (both directions) here with
+        score += evaluate_diagonal(grid, player, length) * weights[length]
         # same length
 
     # Adjust the score for the minimizing player
@@ -120,7 +82,7 @@ def evaluate(grid: Grid_t, player: int, max_player: int, max_length: int) \
 
 
 def minimax_with_move(grid: Grid_t, depth: int, is_maximizing_player: int,
-                      alpha: int, beta, player,
+                      player,
                       height: int, width: int, nb_tokens: int,
                       nb_square_filled: int,
                       stack: StackPos_t):
@@ -129,8 +91,6 @@ def minimax_with_move(grid: Grid_t, depth: int, is_maximizing_player: int,
     :param grid: the 2D array representing the grid
     :param depth: the depth of the tree
     :param is_maximizing_player: the player to maximize
-    :param alpha: the alpha value
-    :param beta: the beta value
     :param player: the player to check (0 or 1)
     :param height: the height of the grid
     :param width: the width of the grid
@@ -139,50 +99,66 @@ def minimax_with_move(grid: Grid_t, depth: int, is_maximizing_player: int,
     :param stack: the stack of positions played
     :return: the best move
     """
+    if depth == 0:
+        return evaluate(grid, player, is_maximizing_player, nb_tokens), None
+
+    # Check if the last move won the game
     fst = peek(stack)
-    if depth == 0 or match_null(height, width,
-                                nb_square_filled):
-        return evaluate(grid, player, is_maximizing_player, nb_tokens), fst
+    if fst and finish_range_in_all_directions(player, fst[0], fst[1], grid,
+                                              nb_tokens, width, height):
+        return evaluate(grid, player, is_maximizing_player, nb_tokens), None
+
+    # Check for a draw
+    if match_null(height, width, nb_square_filled):
+        return evaluate(grid, player, is_maximizing_player, nb_tokens), None
 
     best_move = None
 
     if is_maximizing_player:
         max_eval = float('-inf')
-        child, position = get_possible_positions(grid, height, width, player)
-        for i in range(len(child)):
+        for i in range(len(grid)):
+            copie_grid = copy.deepcopy(grid)
             new_pile = stack[:]
-            new_pile.append(position[i])
-            eval, _ = minimax_with_move(child[i], depth - 1,
-                                        False,
-                                        alpha,
-                                        beta, 1 - player, height, width,
-                                        nb_tokens, nb_square_filled + 1,
-                                        new_pile)
-            if eval > max_eval:
-                max_eval = eval
-                best_move = position[i]
-            alpha = max(alpha, eval)
-            if beta <= alpha:
-                break
+            k: int = height - 1
+            while k != -1:
+                if copie_grid[i][k] == -1:
+                    copie_grid[i][k] = player
+                    new_pile.append([i, k])
+                    break
+                k -= 1
+            if k != -1:
+                eval, _ = minimax_with_move(copie_grid, depth - 1,
+                                            False,
+                                            1 - player, height, width,
+                                            nb_tokens, nb_square_filled + 1,
+                                            new_pile)
+
+                if eval > max_eval:
+                    max_eval = eval
+                    best_move = [i, k]
         return max_eval, best_move
     else:
         min_eval = float('inf')
-        child, position = get_possible_positions(grid, height, width, player)
-        for i in range(len(child)):
+        for i in range(len(grid)):
+            copie_grid = copy.deepcopy(grid)
             new_pile = stack[:]
-            new_pile.append(position[i])
-            eval, _ = minimax_with_move(child[i], depth - 1,
-                                        True,
-                                        alpha, beta,
-                                        1 - player, height, width, nb_tokens,
-                                        nb_square_filled + 1,
-                                        new_pile)
-            if eval < min_eval:
-                min_eval = eval
-                best_move = position[i]
-            beta = min(beta, eval)
-            if beta <= alpha:
-                break
+            k: int = height - 1
+            while k != -1:
+                if copie_grid[i][k] == -1:
+                    copie_grid[i][k] = 1 - player
+                    new_pile.append([i, k])
+                    break
+                k -= 1
+            if k != -1:
+                eval, _ = minimax_with_move(copie_grid, depth - 1,
+                                            True,
+                                            1 - player, height, width,
+                                            nb_tokens, nb_square_filled + 1,
+                                            new_pile)
+
+                if eval < min_eval:
+                    min_eval = eval
+                    best_move = [i, k]
         return min_eval, best_move
 
 
@@ -198,13 +174,25 @@ def evaluate_horizontal(grid: Grid_t, player: int, length: int) -> int:
     for row in grid:
         for i in range(len(row) - length + 1):
             sequence = row[i:i + length]
-            if (sequence.count(player) == length and
-                    sequence.count(None) == 0):
-                count += 1
-            elif (sequence.count(player) == length - 1 and
-                  sequence.count(None) == 1):
-                # This is an open-ended sequence with potential to win
-                count += 0.5
+
+            if sequence.count(1 - player) == length and sequence.count(
+                    None) == 0:
+                count += 2  # Blocking an almost complete sequence by the
+                # opponent
+
+            if sequence.count(1 - player) == length - 1 and sequence.count(
+                    None) == 1:
+                count += 1.5  # Blocking an almost complete sequence by
+                # the opponent
+
+            elif sequence.count(player) == length:
+                count += 1  # Completed sequence by the player
+
+            elif sequence.count(player) == length - 1 and sequence.count(
+                    None) == 1:
+                count += 0.5  # Potential winning sequence for the
+                # player
+
     return count
 
 
@@ -220,13 +208,23 @@ def evaluate_vertical(grid: Grid_t, player: int, length: int) -> int:
     for col in range(len(grid[0])):
         for i in range(len(grid) - length + 1):
             sequence = [grid[i + n][col] for n in range(length)]
-            if (sequence.count(player) == length and
-                    sequence.count(None) == 0):
-                count += 1
-            elif (sequence.count(player) == length - 1 and
-                  sequence.count(None) == 1):
-                # This is an open-ended sequence with potential to win
-                count += 0.5
+
+            if sequence.count(1 - player) == length and sequence.count(
+                    None) == 0:
+                count += 2  # Blocking an almost complete sequence by the
+                # opponent
+
+            if sequence.count(1 - player) == length - 1 and sequence.count(
+                    None) == 1:
+                count += 1.5  # Blocking an almost complete sequence by
+                # the opponent
+
+            elif sequence.count(player) == length:
+                count += 1  # Completed sequence by the player
+
+            elif sequence.count(player) == length - 1 and sequence.count(
+                    None) == 1:
+                count += 0.5  # Potential winning sequence for the player
     return count
 
 
@@ -239,14 +237,36 @@ def evaluate_diagonal(grid: Grid_t, player: int, length: int) -> int:
     :return: the score of the sequence
     """
     count = 0
+    # Check diagonals from top-left to bottom-right
     for col in range(len(grid[0]) - length + 1):
         for row in range(len(grid) - length + 1):
             sequence = [grid[row + n][col + n] for n in range(length)]
-            if (sequence.count(player) == length and
-                    sequence.count(None) == 0):
-                count += 1
-            elif (sequence.count(player) == length - 1 and
-                  sequence.count(None) == 1):
-                # This is an open-ended sequence with potential to win
-                count += 0.5
+            count += evaluate_sequence(sequence, player, length)
+
+    # Check diagonals from bottom-left to top-right
+    for col in range(len(grid[0]) - length + 1):
+        for row in range(length - 1, len(grid)):
+            sequence = [grid[row - n][col + n] for n in range(length)]
+            count += evaluate_sequence(sequence, player, length)
+
+    return count
+
+
+def evaluate_sequence(sequence, player, length):
+    """
+    Evaluate a sequence of tokens.
+    """
+    count = 0
+    if sequence.count(1 - player) == length and sequence.count(None) == 0:
+        count += 2  # Blocking an almost complete sequence by the opponent
+
+    if sequence.count(1 - player) == length - 1 and sequence.count(None) == 1:
+        count += 1.5  # Blocking an almost complete sequence by the opponent
+
+    elif sequence.count(player) == length:
+        count += 1  # Completed sequence by the player
+
+    elif sequence.count(player) == length - 1 and sequence.count(None) == 1:
+        count += 0.5  # Potential winning sequence for the player
+
     return count

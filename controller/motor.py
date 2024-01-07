@@ -1,3 +1,7 @@
+## @file motor.py
+## This file contains the main function to launch the program
+
+
 """
 @file motor.py
 @desc This file contains the main function to launch the program

@@ -1,3 +1,5 @@
+## @file game_types.py
+## This file contains the special types that are created
 """
 @package model
 @file game_types.py

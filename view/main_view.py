@@ -1,10 +1,12 @@
+## @file main_view.py
+## This file is the main view of the program with all the widgets linked
+
 """
 
-@package view
-@file main_view.py
-@desc The main view of the game
-@brief This file is the main view of the program with all the widgets linked
-
+## @package view
+## @file main_view.py
+## @description The main view of the game
+## @brief This file is the main view of the program with all the widgets linked
 """
 from tkinter.colorchooser import askcolor
 

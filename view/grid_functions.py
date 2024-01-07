@@ -1,3 +1,7 @@
+## @file grid_functions.py
+## This file contains all the functions that are used to create the
+## grid and to fill it in
+
 """
 @file grid_functions.py
 @description This file contains all the functions that are used to create the
@@ -237,11 +241,10 @@ def fill_cell(
 
             # get the best position for the bot
             position = minimax_with_move(tab, depth, True,
-                                         float('-inf'), float('inf'),
                                          BOTVALUE, height, width, tokens,
                                          nbSquareFilled, stack)
             print(f"stack  :  {stack}")
-            print(f"grid  :  {tab}")
+
             print(f"score {position[0]} |position joué par le bot : "
                   f" {position[1]}")
             # if the position is not None
@@ -251,6 +254,7 @@ def fill_cell(
                     canvas, position[1][1], 0, bot_color, width, height,
                     tokens
                 )
+                print(f"grid  :  {tab}")
                 # increment the number of turn for the next player: the human
                 tourJeu += 1
 
@@ -311,8 +315,7 @@ def best_position_func(
 
     if finishG:
         pos = minimax_with_move(tab, depth, True,
-                                float('-inf'),
-                                float('inf'), BOTVALUE, height, width,
+                                HUMANVALUE, height, width,
                                 nbSquareFilled,
                                 tokens, stack)[1]
 
@@ -335,8 +338,7 @@ def best_position_func(
     if tourJeu % 2 != 0:
         if finishG:
             pos = minimax_with_move(tab, depth, True,
-                                    float('-inf'),
-                                    float('inf'), BOTVALUE, height, width,
+                                    BOTVALUE, height, width,
                                     nbSquareFilled,
                                     tokens, stack)[1]
             if pos is not None:

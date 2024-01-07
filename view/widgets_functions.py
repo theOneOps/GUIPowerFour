@@ -1,3 +1,6 @@
+## @file widgets_functions.py
+## This file contains all the functions to create the widgets
+
 """
 @package view
 @file widgets_functions.py

@@ -1,3 +1,7 @@
+## @file game_logic.py
+## This file contains all the funtions needed to play the game
+## except the bot's logic
+
 """
 @package model
 @file: game_logic.py
