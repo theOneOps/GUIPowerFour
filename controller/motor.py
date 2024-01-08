@@ -16,7 +16,7 @@ from view.grid_functions import *
 WINDOWWIDTH: int = 300
 
 ## window's height
-WINDOWHEIGHT: int = 530
+WINDOWHEIGHT: int = 500
 
 ## background's color of the window
 PINK: str = "#F8E5E5"
@@ -45,7 +45,7 @@ def init_game():
     window.geometry(f"+{x_position}+{y_position}")
 
     # can't resize the window anymore
-    window.resizable(False, False)
+    # window.resizable(False, False)
 
     # Set the background's color of the window
     window.config(bg=PINK, padx=20)

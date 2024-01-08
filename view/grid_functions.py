@@ -240,9 +240,12 @@ def fill_cell(
         if finishG:
 
             # get the best position for the bot
-            position = minimax_with_move(tab, depth, True,
-                                         BOTVALUE, height, width, tokens,
-                                         nbSquareFilled, stack)
+
+            # position = minimax_with_move(tab, depth, True,
+            #                              BOTVALUE, height, width, tokens,
+            #                              nbSquareFilled, stack)
+            best_grid = minimax(tab, depth, BOTVALUE, True, tokens)
+            position = get_the_best_position(best_grid[1], tab, BOTVALUE)
             print(f"stack  :  {stack}")
 
             print(f"score {position[0]} |position joué par le bot : "
@@ -314,10 +317,13 @@ def best_position_func(
     global finishG
 
     if finishG:
-        pos = minimax_with_move(tab, depth, True,
-                                HUMANVALUE, height, width,
-                                nbSquareFilled,
-                                tokens, stack)[1]
+        # pos = minimax_with_move(tab, depth, True,
+        #                         HUMANVALUE, height, width,
+        #                         nbSquareFilled,
+        #                         tokens, stack)[1]
+
+        best_grid = minimax(tab, depth, BOTVALUE, True, tokens)
+        pos = get_the_best_position(best_grid[1], tab, BOTVALUE)
 
         # update the game's board with the best position for the human
         update_game_state(
@@ -337,10 +343,13 @@ def best_position_func(
     # the bot's turn
     if tourJeu % 2 != 0:
         if finishG:
-            pos = minimax_with_move(tab, depth, True,
-                                    BOTVALUE, height, width,
-                                    nbSquareFilled,
-                                    tokens, stack)[1]
+
+            # pos = minimax_with_move(tab, depth, True,
+            #                         BOTVALUE, height, width,
+            #                         nbSquareFilled,
+            #                         tokens, stack)[1]
+            best_grid = minimax(tab, depth, BOTVALUE, True, tokens)
+            pos = get_the_best_position(best_grid[1], tab, BOTVALUE)
             if pos is not None:
                 update_game_state(
                     canvas, pos[1], 0, bot_color, width, height, tokens
@@ -432,3 +441,11 @@ def modify_board(
                 canvas.itemconfig(f"circle_{row}_{col}", fill=f"{human_color}")
             else:
                 canvas.itemconfig(f"circle_{row}_{col}", fill=f"{bot_color}")
+
+
+def get_the_best_position(best_board: Grid_t, board: Grid_t, player: int) -> Pos_t:
+    for row in range(len(best_board)):
+        for col in range(len(best_board[row])):
+            if best_board[row][col] != board[row][col]:
+                if best_board[row][col] == player:
+                    return [row, col]
