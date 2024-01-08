@@ -14,6 +14,8 @@ board, and all trumps functions (come back, best position, reverse board)
 from tkinter import *
 from tkinter import messagebox
 
+import numpy as np
+
 from model.bot_logic import *
 from model.game_logic import *
 
@@ -163,6 +165,7 @@ def update_game_state(
                 # if the cell is empty
                 if tab[row][col] == -1:
                     tab[row][col] = player
+                    print(f"best_position joué : {[row, col]}")
                     # add the position to the stack
                     stack.append([row, col])
                     # check if the game is over (if there is a winner)
@@ -246,18 +249,20 @@ def fill_cell(
             #                              nbSquareFilled, stack)
             best_grid = minimax(tab, depth, BOTVALUE, True, tokens)
             position = get_the_best_position(best_grid[1], tab, BOTVALUE)
+            print(f"best_grid calculé : \n{np.array(best_grid[1])}")
+            print(f"best_position calculé : {position}")
             print(f"stack  :  {stack}")
 
-            print(f"score {position[0]} |position joué par le bot : "
-                  f" {position[1]}")
+            # print(f"score {position[0]} |position joué par le bot : "
+            #       f" {position[1]}")
             # if the position is not None
-            if position[1] is not None:
+            if position is not None:
                 # actualize the game's board with the bot's position
                 update_game_state(
-                    canvas, position[1][1], 0, bot_color, width, height,
+                    canvas, position[1], 0, bot_color, width, height,
                     tokens
                 )
-                print(f"grid  :  {tab}")
+                # print(f"grid  :  {tab}")
                 # increment the number of turn for the next player: the human
                 tourJeu += 1
 
@@ -322,8 +327,8 @@ def best_position_func(
         #                         nbSquareFilled,
         #                         tokens, stack)[1]
 
-        best_grid = minimax(tab, depth, BOTVALUE, True, tokens)
-        pos = get_the_best_position(best_grid[1], tab, BOTVALUE)
+        best_grid = minimax(tab, depth, HUMANVALUE, True, tokens)
+        pos = get_the_best_position(best_grid[1], tab, HUMANVALUE)
 
         # update the game's board with the best position for the human
         update_game_state(
@@ -443,7 +448,8 @@ def modify_board(
                 canvas.itemconfig(f"circle_{row}_{col}", fill=f"{bot_color}")
 
 
-def get_the_best_position(best_board: Grid_t, board: Grid_t, player: int) -> Pos_t:
+def get_the_best_position(best_board: Grid_t, board: Grid_t,
+                          player: int) -> Pos_t:
     for row in range(len(best_board)):
         for col in range(len(best_board[row])):
             if best_board[row][col] != board[row][col]:

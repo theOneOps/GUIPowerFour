@@ -20,6 +20,6 @@
     -from PIL import Image, ImageTk
 """
 
-import controller.motor as game
+from controller.motor import init_game
 
-game.init_game()
+init_game()
