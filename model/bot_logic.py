@@ -8,13 +8,10 @@
 the best move for the bot or the random move's one
 
 """
-
 import copy
 import secrets
 
-import numpy as np
-
-# from .game_logic import finish_range_in_all_directions
+from .game_logic import finish_range_in_all_directions
 from .game_types import Grid_t, Pos_t, StackPos_t
 
 
@@ -53,48 +50,22 @@ def match_null(height: int, width: int, nbsquarefilled: int) -> bool:
     return False
 
 
-def Position_possible(grid: Grid_t, player: int):
+def positions_possibles(grid: Grid_t):
+    """
+    @brief get all the possible positions
+    :param grid: the 2D array representing the grid
+    :return: the list of all the possible positions
+    """
     rows = len(grid)
     cols = len(grid[0])
-    L: list[Grid_t] = []
+    l: list[Pos_t] = []
 
     for i in range(cols):
         for j in range(rows - 1, -1, -1):
             if grid[j][i] == -1:
-                Pos: Grid_t = copy.deepcopy(grid)
-                Pos[j][i] = player
-                L.append(Pos)
-                break  # Sort de la boucle interne une fois qu'un coup
-                # est trouvé
-    return L
-
-
-# def evaluate(grid: Grid_t, player: int, max_player: int, max_length: int) \
-#         -> int:
-#     """
-#     @brief evaluate the grid
-#     :param grid: the 2D array representing the grid
-#     :param player: the player to check (0 or 1)
-#     :param max_player: the player to maximize
-#     :param max_length: the maximum length of
-#      a sequence (the number of tokens to check)
-#     :return: return the score of the grid
-#     """
-#     score = 0
-#     # Define weights for different sequence lengths
-#     weights = {i: 10 * i for i in range(3, max_length + 1)}
-#
-#     # Evaluate sequences of various lengths
-#     for length in range(3, max_length + 1):
-#         score += evaluate_horizontal(grid, player, length) * weights[length]
-#         score += evaluate_vertical(grid, player, length) * weights[length]
-#         # Add evaluations for vertical, diagonal (both directions) here with
-#         score += evaluate_diagonal(grid, player, length) * weights[length]
-#         # same length
-#
-#     # Adjust the score for the minimizing player
-#     if not max_player:
-#         score *= -1
+                l.append([j, i])
+                break
+    return l
 
 
 def evaluate(grid: Grid_t, player: int, max_player: int, max_length: int) \
@@ -138,10 +109,27 @@ def evaluate(grid: Grid_t, player: int, max_player: int, max_length: int) \
 
 
 def minimax(grid: Grid_t, depth: int, player: int, max_player: int,
-            nb_tokens: int):
-    L: list[Grid_t] = Position_possible(grid, player)
+            nb_tokens: int, width: int,
+            height: int, nbsquarefilled: int, pos: Pos_t = None) -> (int,
+                                                                     Grid_t):
+    l: list[Pos_t] = positions_possibles(grid)
+    print(f"liste des positions possibles : {l}")
     # Cas de base : profondeur atteinte ou jeu terminé
-    if depth == 0 or len(L) == 0:
+    if pos is not None:
+        if (finish_range_in_all_directions(player, pos[0], pos[1], grid,
+                                           nb_tokens, width, height) and
+                max_player):
+            # Renvoie le score de la position et aucune position (None)
+            return float('inf'), grid
+
+    if pos is not None:
+        if (finish_range_in_all_directions(1 - player, pos[0], pos[1], grid,
+                                           nb_tokens, width, height) and
+                not max_player):
+            # Renvoie le score de la position et aucune position (None)
+            return evaluate(grid, 1 - player, 1 - max_player, nb_tokens), grid
+
+    if depth == 0 or len(l) == 0 or match_null(height, width, nbsquarefilled):
         # Renvoie le score de la position et aucune position (None)
         return evaluate(grid, 1 - player, 1 - max_player, nb_tokens), grid
 
@@ -149,29 +137,36 @@ def minimax(grid: Grid_t, depth: int, player: int, max_player: int,
         # Joueur max (la personne qui joue)
         value = float('-inf')
         best_grid = None
-        for current_grid in L:
+        for current_pos in l:
+            new_grid = copy.deepcopy(grid)
+            new_grid[current_pos[0]][current_pos[1]] = player
+            nbsquarefilled += 1
+            print(new_grid)
             # Récursivement évalue la position suivante
-            print(f"joueur max\n {np.array(current_grid)}\n")
-            score, _ = minimax(current_grid, depth - 1, 1 - player,
-                               1 - max_player, nb_tokens)
+            score, _ = minimax(new_grid, depth - 1, 1 - player,
+                               1 - max_player, nb_tokens,
+                               width, height, nbsquarefilled, current_pos)
             # Met à jour la meilleure position et le score
             if score > value:
                 value = score
-                best_grid = current_grid
+                best_grid = new_grid
     else:
         # Joueur min (adversaire)
         value = float('inf')
         best_grid = None
-        for current_grid in L:
+        for current_pos in l:
+            new_grid = copy.deepcopy(grid)
+            new_grid[current_pos[0]][current_pos[1]] = player
+            nbsquarefilled += 1
             # Récursivement évalue la position suivante
-            print(f"joueur min\n {np.array(current_grid)}\n")
-            score, _ = minimax(current_grid, depth - 1, 1 - player,
+            score, _ = minimax(new_grid, depth - 1, 1 - player,
                                1 - max_player,
-                               nb_tokens)
+                               nb_tokens, width, height, nbsquarefilled,
+                               current_pos)
             # Met à jour la meilleure position et le score
             if score < value:
                 value = score
-                best_grid = current_grid
+                best_grid = new_grid
 
     # Renvoie le score et la meilleure position
     return value, best_grid

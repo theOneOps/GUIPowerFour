@@ -181,6 +181,7 @@ def define_button(
         row: int,
         columnspan: bool = False,
         width: int = 5,
+        anchor: str = "center",
 ) -> Button:
     """
     @brief This function create a button
@@ -192,9 +193,11 @@ def define_button(
     :param row: the row where the button will be
     :param columnspan: a boolean to know if the button will span on 2 columns
     :param width: the width of the current's button
+    :param anchor: the anchor to position the text in the button
     :return: the button
     """
-    btn: Button = Button(parent, text=string, command=function, width=width)
+    btn: Button = Button(parent, text=string, command=function, width=width,
+                         anchor=anchor, justify=CENTER)
     if columnspan:
         btn.grid(column=col, row=row, columnspan=2, pady=20)
     else:

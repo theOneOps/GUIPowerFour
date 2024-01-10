@@ -18,13 +18,13 @@ from .widgets_functions import *
 # GLOBAL VARIABLES
 
 ## the game's board height
-height: int = 5
+height: int = 6
 ## the game's board width
-width: int = 5
+width: int = 6
 ## the number of tokens to win
-nb_tokens: int = 5
+nb_tokens: int = 6
 ## the level of the bot
-level = 5
+level = 2
 ## the color of the bot on the game's board
 bot_color = "red"
 ## the color of the human on the game's board
@@ -460,20 +460,21 @@ def define_game_play(window) -> Frame:
     # the frame that will contain all the trump's buttons and labels that will
     # show the number of times the trump has been used
 
-    trump_frame: Frame = define_frame(gamePlay, 0, 5, columnspan=True)
+    trump_comeback_frame: Frame = define_frame(gamePlay, 0, 5,
+                                               columnspan=False)
 
     # the section for the comeback Button
 
     come_back_btn: Button = define_button(
-        trump_frame, lambda: increment_count("comeback"),
+        trump_comeback_frame, lambda: increment_count("comeback"),
         "come back",
         0, 0,
-        width=12
+        width=11, anchor="w"
     )
 
-    label_come_back_count: Label = define_label(trump_frame,
+    label_come_back_count: Label = define_label(trump_comeback_frame,
                                                 "used:0", 10,
-                                                1, 0,
+                                                0, 1,
                                                 False)
 
     def increment_count(string: str) -> None:
@@ -505,31 +506,38 @@ def define_game_play(window) -> Frame:
             comebacktrump += 1
             label_come_back_count.config(text=f"used: {comebacktrump}")
             print("come back")
-            come_back_func(grid_tab)
+            come_back_func(grid_tab, human_color, bot_color, height)
 
     # the section for the reverse board's Button
 
+    trump_reverse_board_frame: Frame = define_frame(gamePlay, 0, 5,
+                                                    columnspan=True)
+
     btn_reverse_board: Button = define_button(
-        trump_frame, lambda: increment_count("reverse"),
-        "reverse board", 0, 1,
-        width=12
+        trump_reverse_board_frame, lambda: increment_count("reverse"),
+        "reverse board", 0, 0,
+        width=14, anchor="w"
     )
 
     label_reverse_board_count: Label = define_label(
-        trump_frame, "used:0", 10, 1, 1, False
+        trump_reverse_board_frame, "used:0", 10, 0,
+        1, False
     )
 
     # the section for the best Position Button
 
+    trump_btn_pos_frame: Frame = define_frame(gamePlay, 1, 5,
+                                              columnspan=False)
+
     btn_best_pos: Button = define_button(
-        trump_frame, lambda: increment_count("best"),
-        "best position", 0, 2,
+        trump_btn_pos_frame, lambda: increment_count("best"),
+        "best position", 0, 0,
         width=12
     )
 
-    label_best_pos_count: Label = define_label(trump_frame,
+    label_best_pos_count: Label = define_label(trump_btn_pos_frame,
                                                "used:0", 10,
-                                               1, 2,
+                                               0, 1,
                                                False)
 
     # the reset button to reset the game's board
