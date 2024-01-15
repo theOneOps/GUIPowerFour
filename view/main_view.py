@@ -10,8 +10,6 @@
 """
 from tkinter.colorchooser import askcolor
 
-from PIL import Image, ImageTk
-
 from .grid_functions import *
 from .widgets_functions import *
 
@@ -60,6 +58,7 @@ def init_config_frame(window) -> Frame:
     # the main frame that will contain all the widgets of the page
     container_frame: Frame = define_frame(window, 0, 0, WINDOWWIDTH,
                                           WINDOWHEIGHT)
+
     # this widget is used to initialize the grid property for the rest
     # of the widgets
     nothing = Label(container_frame, text="", bg=PINK)
@@ -78,51 +77,38 @@ def init_config_frame(window) -> Frame:
     )
     canvas.grid(column=0, row=2, columnspan=2)
     # try to open the image of the game and display it on the canvas
-    try:
-        power_image = Image.open("../Images/power.png")
-        power_image_canvas = ImageTk.PhotoImage(power_image)
-        canvas.create_image(110, 110, image=power_image_canvas)
-        canvas.grid(column=0, row=2, columnspan=2)
-        # canvas.config(bg="black")
+    # Display colored text on the canvas with a border
+    text = "Power Po\nPower Pow\nPower Power\nPower 4++"
 
-    # if the image is not found, display a text on the canvas
+    # Border attributes
+    border_width = 2.
+    border_relief = "solid"
 
-    except Exception as e:
-        print(f"We got a problem : {e}")
-        # Display colored text on the canvas with a border
-        text = "Power Po\nPower Pow\nPower Power\nPower 4++"
+    # Create a rectangle to serve as the border
+    canvas.create_rectangle(
+        border_width,
+        border_width,
+        canvas.winfo_reqwidth() - border_width,
+        canvas.winfo_reqheight() - border_width,
+        outline="black",
+        width=border_width,
+        fill="light grey")
 
-        # Border attributes
-        border_width = 2.
-        border_relief = "solid"
+    # Create colored text lines on the canvas
+    lines = text.split("\n")
+    line_height = canvas.winfo_reqheight() // len(lines)
 
-        # Create a rectangle to serve as the border
-        canvas.create_rectangle(
-            border_width,
-            border_width,
-            canvas.winfo_reqwidth() - border_width,
-            canvas.winfo_reqheight() - border_width,
-            outline="black",
-            width=border_width,
-            fill="light grey"
-        )
-
-        # Create colored text lines on the canvas
-        lines = text.split("\n")
-        line_height = canvas.winfo_reqheight() // len(lines)
-
-        for i, line in enumerate(lines):
-            y_position = i * line_height + line_height // 2
-            color = "gray" if i % 2 == 0 else "blue"
-            # Change color based on line index
-            canvas.create_text(
-                canvas.winfo_reqwidth() // 2,
-                y_position,
-                text=line,
-                font=("Helvetica", 12 + 6 * i),
-                anchor="center",
-                fill=color
-            )
+    for i, line in enumerate(lines):
+        y_position = i * line_height + line_height // 2
+        color = "gray" if i % 2 == 0 else "blue"
+        # Change color based on line index
+        canvas.create_text(
+            canvas.winfo_reqwidth() // 2,
+            y_position,
+            text=line,
+            font=("Helvetica", 12 + 6 * i),
+            anchor="center",
+            fill=color)
 
     # the label that will be displayed to show the users options that they
     # can change for the game
@@ -149,15 +135,6 @@ def init_config_frame(window) -> Frame:
 
     # the function that will be called when the height's spinbox value will
     # change
-    def change_value_height() -> None:
-        """
-        @brief This function will be called when the height's spinbox value
-        :return:None
-        """
-        height_var.set(int(spinbox_width.get()))
-        global width
-        global height
-        height = width
 
     # the function that will be called when the level's spinbox value will
     # change
@@ -193,28 +170,25 @@ def init_config_frame(window) -> Frame:
     # the function that will be called when we click on a button color to
     # change the color of the bot or the human
 
-    def colorChoose(entry: Entry, player: str) -> None:
+    def colorChoose(btn: Button, player: str) -> None:
         global bot_color
         global human_color
         color_tuple = askcolor(title=f"Choose the color of the {player}")
 
-        entry.delete(0, "end")
         if color_tuple is None:  # Check if the user canceled the askcolor
             # the color selection
             if player == "Bot":
-                entry.insert(0, bot_color)
-                entry.config(bg=bot_color)
+                btn.config(bg=bot_color)
             else:
-                entry.insert(0, human_color)
-                entry.config(bg=human_color)
+                btn.config(bg=human_color)
         else:
             color = str(color_tuple[1])  # Get the color string
-            entry.insert(0, str(color))
-            entry.config(bg=str(color))
             if player == "Bot":
                 bot_color = str(color)
+                btn_bot_color.config(bg=bot_color)
             else:
                 human_color = str(color)
+                btn_human_color.config(bg=human_color)
 
     # the spinbox for the width and the label that will be displayed next to
     # the spinbox's width
@@ -284,51 +258,50 @@ def init_config_frame(window) -> Frame:
     # the frame that will contain the color of the bot(entry), the color of
     # the bot, and the button to change the color of the bot
 
-    sth_frame: Frame = define_frame(container_frame, 0, 9)
+    sth_frame: Frame = define_frame(container_frame, 0, 9,
+                                    columnspan=True)
 
-    label_bot_color: Label = define_label(sth_frame, "Bot's color",
+    sth_frame.config(pady=0)
+
+    bot_color_frame: Frame = define_frame(sth_frame, 0, 0)
+    bot_color_frame.config(pady=0)
+
+    label_bot_color: Label = define_label(bot_color_frame, "Bot's color",
                                           10,
                                           0, 0,
                                           False)
 
-    entry_bot_color: Entry = define_entry(sth_frame, 8,
-                                          f"{bot_color}",
-                                          1, 0)
-    entry_bot_color.config(bg=bot_color)
-
     btn_bot_color = define_button(
-        sth_frame,
-        lambda entry=entry_bot_color, player="Bot": colorChoose(entry, player),
-        "Bot color",
-        0,
+        bot_color_frame,
+        lambda: colorChoose(btn_bot_color, "Bot"),
+        " ",
         1,
-        width=10,
-        columnspan=True,
+        0,
+        width=3,
     )
+
+    btn_bot_color.config(bg=bot_color)
 
     # the frame that will contain the color of the human(entry), the color
     # of the human, and the button to change the color of the human
-    sevth_frame: Frame = define_frame(container_frame, 1, 9)
+    human_color_frame: Frame = define_frame(sth_frame, 1, 0)
+    human_color_frame.config(pady=0)
 
     label_human_color: Label = define_label(
-        sevth_frame, "Human's color", 10,
+        human_color_frame, "Human's color", 10,
         0, 0, False
     )
-    entry_human_color: Entry = define_entry(sevth_frame, 8,
-                                            f"{human_color}", 1,
-                                            0)
 
-    entry_human_color.config(bg=human_color)
     btn_human_color = define_button(
-        sevth_frame,
-        lambda entry=entry_human_color, player="Human": colorChoose(entry,
-                                                                    player),
-        "Human color",
-        0,
+        human_color_frame,
+        lambda: colorChoose(btn_human_color, "Human"),
+        " ",
         1,
-        width=10,
-        columnspan=True,
+        0,
+        width=3,
     )
+
+    btn_human_color.config(bg=human_color)
 
     # the button to quit the game
     quitBtn: Button = define_button(
@@ -345,6 +318,8 @@ def init_config_frame(window) -> Frame:
         container_frame, lambda: define_game_play(window),
         "Start", 1, 10
     )
+
+    container_frame.config(pady=0)
 
     return container_frame
 
@@ -561,6 +536,12 @@ def define_game_play(window) -> Frame:
 
 
 def help_function(number: int) -> None:
+    """
+    @brief This function display the help of the game
+    :param number: the number of the help to display (0 for the game's rule
+    and 1 for the game's configuration)
+    :return: None
+    """
     configuration_text = """\
 
     This page is where you configure the game, including settings such as \

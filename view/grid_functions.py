@@ -354,8 +354,9 @@ def best_position_func(
             messagebox.showinfo("fin du jeu", "pas de gagnant")
             return
 
-        best_grid = minimax(tab, depth, depth, HUMANVALUE, 1, tokens,
+        best_grid = minimax(tab, 1, 1, HUMANVALUE, 1, tokens,
                             width, height, nbSquareFilled)
+        print(f"la grille de la best position : {best_grid[1]}")
         pos = get_the_best_position(best_grid[1], tab, HUMANVALUE)
         if pos is not None:
             # update the game's board with the best position for the human
@@ -377,7 +378,7 @@ def best_position_func(
     if finishG:
         if nbSquareFilled < height * width:
 
-            best_grid = minimax(tab, depth, depth, BOTVALUE,
+            best_grid = minimax(tab, 2, 2, BOTVALUE,
                                 1, tokens,
                                 width, height, nbSquareFilled)
             pos = get_the_best_position(best_grid[1], tab, BOTVALUE)

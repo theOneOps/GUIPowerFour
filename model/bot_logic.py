@@ -108,24 +108,40 @@ def evaluate(grid: Grid_t, player: int, max_player: int, max_length: int) \
 
 def minimax(grid: Grid_t, truly_depth: int, depth: int, player: int,
             max_player: int, nb_tokens: int, width: int,
-            height: int, nbsquarefilled: int, pos: Pos_t = None) -> (int,
-                                                                     Grid_t):
+            height: int, nbsquarefilled: int, previous_player: int = -1,
+            pos: Pos_t
+            = None) -> (int, Grid_t):
+    """
+    @brief minimax algorithm
+    :param grid: the 2D array representing the grid
+    :param truly_depth: the depth of the tree
+    :param depth: the depth of the tree
+    :param player: the player to check (0 for the bot or 1 for the human)
+    :param max_player: the player to maximize
+    :param nb_tokens: the number of tokens to align to win the game
+    :param width: the width of the grid
+    :param height: the height of the grid
+    :param nbsquarefilled: the number of square filled
+    :param previous_player: the player who played the previous move
+    :param pos: the position to check for the player who plays that position
+    :return: the score of the best position and the best grid according to the
+    minimax algorithm
+    """
     l: list[Pos_t] = positions_possibles(grid)
-    # print(f"liste des positions possibles : {l}")
     # Cas de base : profondeur atteinte ou jeu terminé
     if pos is not None:
-        if (finish_range_in_all_directions(player, pos[0], pos[1], grid,
+        if (finish_range_in_all_directions(previous_player, pos[0], pos[1],
+                                           grid,
                                            nb_tokens, width, height) and
-                max_player):
-            # Renvoie le score de la position et aucune position (None)
-            return float('inf'), grid
-
-    if pos is not None:
-        if (finish_range_in_all_directions(player, pos[0], pos[1], grid,
-                                           nb_tokens, width, height) and
-                not max_player):
+                max_player == 1):
             # Renvoie le score de la position et aucune position (None)
             return float('-inf'), grid
+        elif (finish_range_in_all_directions(previous_player, pos[0], pos[1],
+                                             grid,
+                                             nb_tokens, width, height) and
+              max_player == 0):
+            # Renvoie le score de la position et aucune position (None)
+            return float('inf'), grid
 
     if match_null(height, width, nbsquarefilled):
         return 0, grid  # 5000
@@ -148,11 +164,16 @@ def minimax(grid: Grid_t, truly_depth: int, depth: int, player: int,
             # Récursivement évalue la position suivante
             score, _ = minimax(new_grid, truly_depth, depth - 1, 1 - player,
                                1 - max_player, nb_tokens,
-                               width, height, nbsquarefilled + 1, current_pos)
+                               width, height, nbsquarefilled + 1,
+                               player, current_pos)
             # Met à jour la meilleure position et le score
             if score > value:
                 value = score
                 best_grid = new_grid
+
+            if score == value:
+                best_grid = new_grid
+
     else:
         # Joueur min (adversaire)
         value = float('inf')
@@ -164,10 +185,12 @@ def minimax(grid: Grid_t, truly_depth: int, depth: int, player: int,
             score, _ = minimax(new_grid, truly_depth, depth - 1, 1 - player,
                                1 - max_player,
                                nb_tokens, width, height, nbsquarefilled + 1,
-                               current_pos)
+                               player, current_pos)
             # Met à jour la meilleure position et le score
             if score < value:
                 value = score
+                best_grid = new_grid
+            if score == value:
                 best_grid = new_grid
 
     # Renvoie le score et la meilleure position

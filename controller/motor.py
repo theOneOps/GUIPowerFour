@@ -45,7 +45,7 @@ def init_game():
     window.geometry(f"+{x_position}+{y_position}")
 
     # can't resize the window anymore
-    # window.resizable(False, False)
+    window.resizable(False, False)
 
     # Set the background's color of the window
     window.config(bg=PINK, padx=20)
