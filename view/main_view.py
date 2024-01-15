@@ -22,7 +22,7 @@ height: int = 6
 ## the game's board width
 width: int = 6
 ## the number of tokens to win
-nb_tokens: int = 6
+nb_tokens: int = 4
 ## the level of the bot
 level = 2
 ## the color of the bot on the game's board
@@ -35,6 +35,8 @@ comebacktrump: int = 0
 bestpositiontrump: int = 0
 ## variable to keep track of the number of reverse trump used
 reversetrump: int = 0
+## variable to keep track of who start first
+radio_state: IntVar
 
 
 def init_config_frame(window) -> Frame:
@@ -53,6 +55,7 @@ def init_config_frame(window) -> Frame:
     global height
     global nb_tokens
     global level
+    global radio_state
 
     # the main frame that will contain all the widgets of the page
     container_frame: Frame = define_frame(window, 0, 0, WINDOWWIDTH,
@@ -151,9 +154,10 @@ def init_config_frame(window) -> Frame:
         @brief This function will be called when the height's spinbox value
         :return:None
         """
-        height_var.set(int(spinbox_height.get()))
+        height_var.set(int(spinbox_width.get()))
+        global width
         global height
-        height = height_var.get()
+        height = width
 
     # the function that will be called when the level's spinbox value will
     # change
@@ -175,7 +179,9 @@ def init_config_frame(window) -> Frame:
         """
         width_var.set(int(spinbox_width.get()))
         global width
+        global height
         width = width_var.get()
+        height = width_var.get()
 
     # the function that will be called when the width's spinbox value will
     # change
@@ -226,9 +232,9 @@ def init_config_frame(window) -> Frame:
     # label that will be displayed next to the spinbox's height
     scd_frame: Frame = define_frame(container_frame, 1, 5)
     spinbox_height: Spinbox = define_spinbox(
-        scd_frame, change_value_height,
+        scd_frame, change_value_width(),
         0, 10, 10,
-        0, value_var=height_var
+        0, value_var=width_var
     )
 
     label_height: Label = define_label(scd_frame,
@@ -264,7 +270,8 @@ def init_config_frame(window) -> Frame:
         container_frame, "who start first ?", 10, 0,
         7, True, fill="red"
     )
-    radio_state: IntVar = IntVar()
+    global radio_state
+    radio_state = IntVar()
     radio_bot: Radiobutton = define_radio(
         container_frame, change_radio_value, "Bot", radio_state,
         0, 0, 8
@@ -330,7 +337,7 @@ def init_config_frame(window) -> Frame:
     # the button to see the help of the config page, helps about the options
 
     helpBtn: Button = define_button(
-        container_frame, lambda: print("Help"), "Help",
+        container_frame, lambda: help_function(1), "Help",
         0, 10, True
     )
     # the button to launch the game
@@ -374,7 +381,7 @@ def define_game_play(window) -> Frame:
         0
     )
     # the button to get helps about the game
-    help_btn = define_button(gamePlay, lambda: print("Help"),
+    help_btn = define_button(gamePlay, lambda: help_function(0),
                              "Help", 0, 0,
                              True)
 
@@ -443,24 +450,29 @@ def define_game_play(window) -> Frame:
 
     print(f"HEIGHT is : {height}\n")
 
+    board_frame: Frame = define_frame(gamePlay, 0, 3, columnspan=True)
+    global radio_state
     # canvas to print the game's board
     grid_tab: Canvas = create_board(
-        gamePlay, width, height, CELL_SIZE, human_color, bot_color,
-        tokens=nb_tokens, depth=level
+        board_frame, width, height, CELL_SIZE, human_color, bot_color,
+        tokens=nb_tokens, who_starts=radio_state.get(), depth=level
     )
-    grid_tab.grid(row=3, column=0, columnspan=2)
-
-    label_all_trumps: Label = define_label(gamePlay,
-                                           "All trumps Card",
-                                           15, 0,
-                                           4, True)
-    label_all_trumps.config(pady=5)
+    grid_tab.grid(row=0, column=0, columnspan=2)
 
     # the trump 's frame
     # the frame that will contain all the trump's buttons and labels that will
     # show the number of times the trump has been used
 
-    trump_comeback_frame: Frame = define_frame(gamePlay, 0, 5,
+    all_trumps_frame: Frame = define_frame(board_frame, 2, 0)
+    all_trumps_frame.config(padx=50)
+
+    label_all_trumps: Label = define_label(all_trumps_frame,
+                                           "All trumps Card",
+                                           15, 0,
+                                           0, True)
+    label_all_trumps.config(pady=5)
+
+    trump_comeback_frame: Frame = define_frame(all_trumps_frame, 0, 1,
                                                columnspan=False)
 
     # the section for the comeback Button
@@ -510,7 +522,8 @@ def define_game_play(window) -> Frame:
 
     # the section for the reverse board's Button
 
-    trump_reverse_board_frame: Frame = define_frame(gamePlay, 0, 5,
+    trump_reverse_board_frame: Frame = define_frame(all_trumps_frame, 0,
+                                                    2,
                                                     columnspan=True)
 
     btn_reverse_board: Button = define_button(
@@ -526,7 +539,7 @@ def define_game_play(window) -> Frame:
 
     # the section for the best Position Button
 
-    trump_btn_pos_frame: Frame = define_frame(gamePlay, 1, 5,
+    trump_btn_pos_frame: Frame = define_frame(all_trumps_frame, 0, 3,
                                               columnspan=False)
 
     btn_best_pos: Button = define_button(
@@ -545,3 +558,83 @@ def define_game_play(window) -> Frame:
                               "Reset", 1, 6)
 
     return gamePlay
+
+
+def help_function(number: int) -> None:
+    configuration_text = """\
+
+    This page is where you configure the game, including settings such as \
+board dimensions, player colors, starting player, and more.
+
+    \t\t            Details:
+
+    \b Board Dimensions:\nYou can adjust the width and height of the game
+    board
+    using the spinboxes. Note that they are LINKED, so changing one also \
+changes the other to maintain a SQUARE board.
+
+    \b Bot Difficulty LEVEL:\nChoose the bot's skill level. Higher levels
+    result
+    in a more challenging bot (not everytime), but it may take more time to
+    make moves.
+
+    \b Tokens to Align (the spinbox's TOKENS):\nSet the number of tokens
+    required for a player to win the game.
+
+    \b Starting Player:\nFirst, select whether you or the bot will start the\
+game using the radio buttons. \nYou can also customize the colors for each
+player by clicking on the player's button and confirm the color choice
+with the OK button.
+
+    Finally, the three buttons at the bottom:
+
+    \b Quit:\nUse this button to exit the game (close the program).
+
+    \b Help:\nClick this button to access help on the configuration options.
+
+    \b Start:\nLaunch the game with the current configuration settings.
+
+    \t\t            Have fun !!!
+    """
+
+    game_rules_text = """\
+    This page contains the game's description and rules:
+
+    \t\t            Details:
+
+    \b\bThe first three buttons:
+    \b Return:\n Allows you to go back to the configuration page or the game \
+settings.
+    \b Help:\n Provides access to all the game's rule descriptions.
+    \b Quit:\n Allows you to quit the game (close the program).
+
+    Next, a reminder of the number of tokens required to align for a win \
+(as previously set).
+
+    \b\bPlayer Colors:\n
+    Displays the colors of each player in the game, which you have set.
+
+    \b\bGame Board:
+    To play your token in a column, simply click on the desired column,\
+and the token will be placed at the lowest available position. No need \
+to click on individual cells to place your token.
+
+    \b\bTrump Cards (on the right of the game board) :\n
+    \b Comeback Trump:\n Allows you to revert to a previous turn.To return \
+your turn, you'll need to click the button twice, as the first click takes \
+you to the bot's turn.\n
+    \b Reverse Board Trump:\n Reverses the entire game board.\n
+    \b Best Position Trump:\n Places your token in the best available position\
+based on the current state of the game.\n
+
+    Finally, the Return button lets you reset the game, clearing the board of \
+all tokens.
+
+    \t        Have fun playing Our Connect 4++!
+    """
+    if number:
+
+        messagebox.showinfo("Game settup help",
+                            configuration_text)
+    else:
+        messagebox.showinfo("Game's rule", game_rules_text)

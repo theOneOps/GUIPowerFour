@@ -52,6 +52,7 @@ def create_board(
         human_color: str,
         bot_color: str,
         tokens: int,
+        who_starts: int,
         padding: int = 5,  # Adjust this value for padding
         depth: int = 4,
 ) -> Canvas:
@@ -66,6 +67,7 @@ def create_board(
     :param tokens: the number of tokens to align to win
     :param padding: the padding of the board and for each cell of the board
     :param depth: the depth of the minimax algorithm
+    :param who_starts: the first player to play
     :return: the canvas
     """
     global tab
@@ -124,6 +126,15 @@ def create_board(
             x += cell_size + padding
         x = 0
         y += cell_size + padding
+
+    if who_starts == 0:
+        best_grid = minimax(tab, depth, depth, BOTVALUE, 1, tokens,
+                            width, height, nbSquareFilled)
+        pos = get_the_best_position(best_grid[1], tab, BOTVALUE)
+        if pos is not None:
+            update_game_state(
+                canvas, pos[1], 0, bot_color, width, height, tokens
+            )
 
     return canvas
 
@@ -248,7 +259,7 @@ def fill_cell(
             # position = minimax_with_move(tab, depth, True,
             #                              BOTVALUE, height, width, tokens,
             #                              nbSquareFilled, stack)
-            best_grid = minimax(tab, depth, BOTVALUE, True, tokens,
+            best_grid = minimax(tab, depth, depth, BOTVALUE, 1, tokens,
                                 width, height, nbSquareFilled)
             position = get_the_best_position(best_grid[1], tab, BOTVALUE)
             # print(f"best_grid calculé : \n{np.array(best_grid[1])}")
@@ -342,12 +353,8 @@ def best_position_func(
         if nbSquareFilled == height * width:
             messagebox.showinfo("fin du jeu", "pas de gagnant")
             return
-        # pos = minimax_with_move(tab, depth, True,
-        #                         HUMANVALUE, height, width,
-        #                         nbSquareFilled,
-        #                         tokens, stack)[1]
 
-        best_grid = minimax(tab, depth, HUMANVALUE, True, tokens,
+        best_grid = minimax(tab, depth, depth, HUMANVALUE, 1, tokens,
                             width, height, nbSquareFilled)
         pos = get_the_best_position(best_grid[1], tab, HUMANVALUE)
         if pos is not None:
@@ -367,20 +374,18 @@ def best_position_func(
         return
 
     # the bot's turn
-    if tourJeu % 2 != 0:
-        if finishG:
+    if finishG:
+        if nbSquareFilled < height * width:
 
-            # pos = minimax_with_move(tab, depth, True,
-            #                         BOTVALUE, height, width,
-            #                         nbSquareFilled,
-            #                         tokens, stack)[1]
-            best_grid = minimax(tab, depth, BOTVALUE, True, tokens,
+            best_grid = minimax(tab, depth, depth, BOTVALUE,
+                                1, tokens,
                                 width, height, nbSquareFilled)
             pos = get_the_best_position(best_grid[1], tab, BOTVALUE)
             if pos is not None:
                 update_game_state(
                     canvas, pos[1], 0, bot_color, width, height, tokens
                 )
+            tourJeu += 1
 
 
 def reverse_board(

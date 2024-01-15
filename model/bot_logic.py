@@ -50,7 +50,7 @@ def match_null(height: int, width: int, nbsquarefilled: int) -> bool:
     return False
 
 
-def positions_possibles(grid: Grid_t):
+def positions_possibles(grid: Grid_t) -> list[Pos_t]:
     """
     @brief get all the possible positions
     :param grid: the 2D array representing the grid
@@ -81,17 +81,15 @@ def evaluate(grid: Grid_t, player: int, max_player: int, max_length: int) \
     """
     score = 0
     # Define weights for different sequence lengths
-    # weights = {i: 10 * i for i in range(3, max_length + 1)}
-    # weights = {3: 5, 4: 50, 5: 100}  # Exemple de poids ajustés
     weights = {
-        3: 10,  # Séquences de 3
-        4: 50,  # Séquences de 4
-        5: 100,  # Séquences de 5
-        6: 200,  # Séquences de 6
-        7: 500,  # Séquences de 7
-        8: 1000,  # Séquences de 8
-        9: 2000,  # Séquences de 9
-        10: 5000  # Séquences de 10
+        3: 30,  # Séquences de 3
+        4: 100,  # Séquences de 4
+        5: 400,  # Séquences de 5
+        6: 600,  # Séquences de 6
+        7: 900,  # Séquences de 7
+        8: 1500,  # Séquences de 8
+        9: 3000,  # Séquences de 9
+        10: 7000  # Séquences de 10
     }
     # Evaluate sequences of various lengths
     for length in range(3, max_length + 1):
@@ -108,12 +106,12 @@ def evaluate(grid: Grid_t, player: int, max_player: int, max_length: int) \
     return score
 
 
-def minimax(grid: Grid_t, depth: int, player: int, max_player: int,
-            nb_tokens: int, width: int,
+def minimax(grid: Grid_t, truly_depth: int, depth: int, player: int,
+            max_player: int, nb_tokens: int, width: int,
             height: int, nbsquarefilled: int, pos: Pos_t = None) -> (int,
                                                                      Grid_t):
     l: list[Pos_t] = positions_possibles(grid)
-    print(f"liste des positions possibles : {l}")
+    # print(f"liste des positions possibles : {l}")
     # Cas de base : profondeur atteinte ou jeu terminé
     if pos is not None:
         if (finish_range_in_all_directions(player, pos[0], pos[1], grid,
@@ -123,15 +121,22 @@ def minimax(grid: Grid_t, depth: int, player: int, max_player: int,
             return float('inf'), grid
 
     if pos is not None:
-        if (finish_range_in_all_directions(1 - player, pos[0], pos[1], grid,
+        if (finish_range_in_all_directions(player, pos[0], pos[1], grid,
                                            nb_tokens, width, height) and
                 not max_player):
             # Renvoie le score de la position et aucune position (None)
-            return evaluate(grid, 1 - player, 1 - max_player, nb_tokens), grid
+            return float('-inf'), grid
 
-    if depth == 0 or len(l) == 0 or match_null(height, width, nbsquarefilled):
+    if match_null(height, width, nbsquarefilled):
+        return 0, grid  # 5000
+
+    if (depth == 0 or len(l) == 0) and truly_depth % 2 == 0:
         # Renvoie le score de la position et aucune position (None)
         return evaluate(grid, 1 - player, 1 - max_player, nb_tokens), grid
+
+    if (depth == 0 or len(l) == 0) and truly_depth % 2 != 0:
+        # Renvoie le score de la position et aucune position (None)
+        return evaluate(grid, player, max_player, nb_tokens), grid
 
     if max_player:
         # Joueur max (la personne qui joue)
@@ -140,12 +145,10 @@ def minimax(grid: Grid_t, depth: int, player: int, max_player: int,
         for current_pos in l:
             new_grid = copy.deepcopy(grid)
             new_grid[current_pos[0]][current_pos[1]] = player
-            nbsquarefilled += 1
-            print(new_grid)
             # Récursivement évalue la position suivante
-            score, _ = minimax(new_grid, depth - 1, 1 - player,
+            score, _ = minimax(new_grid, truly_depth, depth - 1, 1 - player,
                                1 - max_player, nb_tokens,
-                               width, height, nbsquarefilled, current_pos)
+                               width, height, nbsquarefilled + 1, current_pos)
             # Met à jour la meilleure position et le score
             if score > value:
                 value = score
@@ -157,11 +160,10 @@ def minimax(grid: Grid_t, depth: int, player: int, max_player: int,
         for current_pos in l:
             new_grid = copy.deepcopy(grid)
             new_grid[current_pos[0]][current_pos[1]] = player
-            nbsquarefilled += 1
             # Récursivement évalue la position suivante
-            score, _ = minimax(new_grid, depth - 1, 1 - player,
+            score, _ = minimax(new_grid, truly_depth, depth - 1, 1 - player,
                                1 - max_player,
-                               nb_tokens, width, height, nbsquarefilled,
+                               nb_tokens, width, height, nbsquarefilled + 1,
                                current_pos)
             # Met à jour la meilleure position et le score
             if score < value:
