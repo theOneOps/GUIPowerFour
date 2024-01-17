@@ -10,8 +10,6 @@ and used in the game
 
 # -------------------- DEBUT principles variables ------------------
 
-# variables fictifs juste pour pouvoir définir les prototypes voir contenus
-# de mes fonctions...
 
 # principles types
 

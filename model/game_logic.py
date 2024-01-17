@@ -31,10 +31,10 @@ def valid_coord(x: int, y: int, width: int, height: int) -> bool:
     :param height: the height of the grid
     :return: the result of the check (a boolean)
     """
+    # verify if the position is in the grid
     return (0 <= x < width) and (0 <= y < height)
 
 
-# vérifier si un quintuplet en horizontal(si nb_tokens == 5) est atteint
 def finish_range_horizontal(
         player: int,
         posx: int,
@@ -55,11 +55,18 @@ def finish_range_horizontal(
     :param height: the height of the grid
     :return: the result of the check
     """
+    # the idea is to check if the player has nb_tokens tokens aligned in horizontal
+    # to do that, we start the check from the position x - nb_tokens + 1, becuase we want to check
+    # the nb_tokens tokens before the position posx, and we finish the check at the position posx + nb_tokens
+    # because we want to check the nb_tokens tokens after the position posx
+    # basically, we check if the player has nb_tokens tokens aligned in horizontal left and right of the position posx
+    # and posy entering the function
+
     x: int = posx
     y: int = posy
     count: int = 0
 
-    # we starts the check from the position x - nb_tokens + 1
+    # we start the check from the position x - nb_tokens + 1
     for i in range(x - nb_tokens + 1, x + nb_tokens):
         if valid_coord(i, y, width, height):
             if tab[i][y] == player:
@@ -67,11 +74,12 @@ def finish_range_horizontal(
             else:
                 count = 0
         if count == nb_tokens:
+            # as soon as we get the number oh nb_tokens aligned, we stop the check
             break
+    # wez return True if the player has nb_tokens tokens aligned in horizontal else False
     return True if count == nb_tokens else False
 
 
-# vérifier si un quintuplet en vertical(si nb_tokens == 5) est atteint
 def finish_range_vertical(
         player: int,
         posx: int,
@@ -92,6 +100,12 @@ def finish_range_vertical(
     :param height: the height of the grid
     :return: the result of the check
     """
+    # the idea is to check if the player has nb_tokens tokens aligned in vertical
+    # to do that, we start the check from the position y - nb_tokens + 1, because we want to check
+    # the nb_tokens tokens before the position posy, and we finish the check at the position posy + nb_tokens
+    # because we want to check the nb_tokens tokens after the position posy
+    # basically, we check if the player has nb_tokens tokens aligned in vertical up and down of the position posx
+    # and posy entering the function
     x: int = posx
     y: int = posy
     count: int = 0
@@ -102,12 +116,12 @@ def finish_range_vertical(
             else:
                 count = 0
         if count == nb_tokens:
+            # as soon as we get the number oh nb_tokens aligned, we stop the check
             break
+
     return True if count == nb_tokens else False
 
 
-# vérifier si un quintuplet dans le diagonale gauche(si nb_tokens == 5)
-# est atteint
 def finish_range_haut_gauche(
         player: int,
         posx: int,
@@ -128,6 +142,14 @@ def finish_range_haut_gauche(
     :param height: the height of the grid
     :return: the result of the check
     """
+
+    # the idea is to check if the player has nb_tokens tokens aligned in left diagonal up to the right diagonal down
+    # to do that, we start the check from the position x - nb_tokens + 1, becuase we want to check
+    # the nb_tokens tokens before the position posx, and we finish the check at the position posx + nb_tokens
+    # because we want to check the nb_tokens tokens after the position posx
+    # basically, we check if the player has nb_tokens tokens aligned in left diagonal up and right diagonal down
+    # of the position posx and posy entering the function
+
     x: int = posx
     y: int = posy - nb_tokens + 1
     count: int = 0
@@ -138,13 +160,13 @@ def finish_range_haut_gauche(
             else:
                 count = 0
         if count == nb_tokens:
+            # as soon as we get the number oh nb_tokens aligned, we stop the check
             break
         y += 1
+
     return True if count == nb_tokens else False
 
 
-# vérifier si un quintuplet dans le diagonale droit(si nb_tokens == 5)
-# est atteint
 def finish_range_bas_gauche(
         player: int,
         posx: int,
@@ -175,8 +197,11 @@ def finish_range_bas_gauche(
             else:
                 count = 0
         if count == nb_tokens:
+            # as soon as we get the number oh nb_tokens aligned, we stop the check
             break
+        # we decrement y because we want to check the right diagonal down
         y -= 1
+    # we return True if the player has nb_tokens tokens aligned in right diagonal else False
     return True if count == nb_tokens else False
 
 
@@ -196,6 +221,8 @@ def finish_range_in_all_directions(
     :param height: the height of the grid
     :return: the result of the check
     """
+    # we call all the functions that check if the player has nb_tokens tokens aligned in all directions
+    # (horizontal, vertical, up left diagonal to right diagonal down, and up right diagonal to left diagonal down)
     return (
             finish_range_vertical(player, x, y, tab, token, width, height) or
             finish_range_horizontal(player, x, y, tab, token, width, height) or
@@ -226,13 +253,15 @@ def play_bot(
     :param the_pos: the position of the token played
     :return: the result of the check
     """
-    # best_position: Pos_t = best_positionToPlay(tab, player)
+    # here we verify if the bot has won with the current position it has played
     if finish_range_in_all_directions(
             player, the_pos[0], the_pos[1], tab, token, width, height
     ):
+        # if yes, we just change the value of the boolean finishgame to False
+        # to end the game
         print("le joueur bot a gagné")
         finishgame = False
-
+    # we just return the boolean finishgame
     return finishgame
 
 
@@ -286,16 +315,20 @@ def launch_game(
     :param the_pos: the position the human played
     :return: the result of the check
     """
-    res: bool
 
+    res: bool
+    # if the turn is even, it's the human's turn to play, so we call the function play_human
+    # to verify if the human has won
     if tour_jeu % 2 == 0:
         res = play_human(tab, HUMANVALUE, the_pos, finishgame, tokens, width,
                          height)
+
+    # else, it's the bot's turn to play, so we call the function play_bot
     else:
         res = play_bot(tab, BOTVALUE, finishgame, tokens, width, height,
                        the_pos)
     print(f"tour de jeu: {tour_jeu} | finishGame : {res}")
-
+    # at the end we return the boolean finishgame
     return res
 
 
@@ -305,6 +338,9 @@ def peek(stack: StackPos_t) -> Pos_t:
     :param stack: the stack of positions played
     :return: the last element of the stack
     """
+    # here we just return the last element of the stack
+    # so if the stack is empty, we return None
     if not stack:
-        return None  # Retourne None si la pile est vide
+        return None  # in the case of an empty stack
+
     return stack[-1]
