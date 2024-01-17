@@ -194,7 +194,7 @@ def init_config_frame(window) -> Frame:
     # the spinbox's width
     spinbox_width: Spinbox = define_spinbox(
         fst_frame, change_value_width,
-        0, 10,
+        1, 10,
         0, 0, value_var=width_var
     )
 
@@ -206,8 +206,8 @@ def init_config_frame(window) -> Frame:
     # label that will be displayed next to the spinbox's height
     scd_frame: Frame = define_frame(container_frame, 1, 5)
     spinbox_height: Spinbox = define_spinbox(
-        scd_frame, change_value_width(),
-        0, 10, 10,
+        scd_frame, change_value_width,
+        1, 10, 0,
         0, value_var=width_var
     )
 
@@ -219,7 +219,7 @@ def init_config_frame(window) -> Frame:
     # label that will be displayed next to the spinbox's level
     trd_frame: Frame = define_frame(container_frame, 0, 6)
     spinbox_level: Spinbox = define_spinbox(
-        trd_frame, change_value_level, 0,
+        trd_frame, change_value_level, 1,
         10, 0, 0, value_var=level_var
     )
 
@@ -232,7 +232,7 @@ def init_config_frame(window) -> Frame:
     fth_frame: Frame = define_frame(container_frame, 1,
                                     6)
     spinbox_nb_tokens: Spinbox = define_spinbox(
-        fth_frame, change_value_tokens, 0,
+        fth_frame, change_value_tokens, 1,
         10, 0, 0, value_var=nb_tokens_var
     )
 
@@ -244,12 +244,19 @@ def init_config_frame(window) -> Frame:
         container_frame, "who start first ?", 10, 0,
         7, True, fill="red"
     )
-    global radio_state
     radio_state = IntVar()
+    radio_state.set(2)
     radio_bot: Radiobutton = define_radio(
         container_frame, change_radio_value, "Bot", radio_state,
         0, 0, 8
     )
+
+    radio_random: Radiobutton = define_radio(
+        container_frame, change_radio_value, "Random", radio_state,
+        2, 0, 8
+    )
+    radio_random.grid(column=0, row=8, columnspan=2)
+
     radio_human: Radiobutton = define_radio(
         container_frame, change_radio_value, "Human", radio_state,
         1, 1, 8
@@ -556,8 +563,8 @@ changes the other to maintain a SQUARE board.
 
     \b Bot Difficulty LEVEL:\nChoose the bot's skill level. Higher levels
     result
-    in a more challenging bot (not everytime), but it may take more time to
-    make moves.
+    in a more challenging bot, but it may take more time to
+    make moves (we recommend level LOWER THAN 6 for a good balance).
 
     \b Tokens to Align (the spinbox's TOKENS):\nSet the number of tokens
     required for a player to win the game.

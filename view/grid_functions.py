@@ -1,6 +1,7 @@
 ## @file grid_functions.py
 ## This file contains all the functions that are used to create the
-## grid and to fill it in
+## grid and to fill it in and all trumps functions (come back, best position,
+# reverse board)
 
 """
 @file grid_functions.py
@@ -127,7 +128,23 @@ def create_board(
         x = 0
         y += cell_size + padding
 
-    if who_starts == 0:
+    # if who_starts == 2 at the beginning: then we nned to pick
+    # a random value to know who starts
+    if who_starts == 2:
+        # we pick a random value between 0 and 1
+        rand_value: int = secrets.randbelow(2)
+        # if the value is 0, then the bot starts
+        if rand_value == 0:
+            best_grid = minimax(tab, depth, depth, BOTVALUE, 1,
+                                tokens, width, height, nbSquareFilled)
+            pos = get_the_best_position(best_grid[1], tab, BOTVALUE)
+            if pos is not None:
+                update_game_state(
+                    canvas, pos[1], 0, bot_color, width, height, tokens
+                )
+
+    # if the value is 0 at the beginning, then the bot starts
+    elif who_starts == 0:
         best_grid = minimax(tab, depth, depth, BOTVALUE, 1, tokens,
                             width, height, nbSquareFilled)
         pos = get_the_best_position(best_grid[1], tab, BOTVALUE)
@@ -259,8 +276,8 @@ def fill_cell(
             # position = minimax_with_move(tab, depth, True,
             #                              BOTVALUE, height, width, tokens,
             #                              nbSquareFilled, stack)
-            best_grid = minimax(tab, depth, depth, BOTVALUE, 1, tokens,
-                                width, height, nbSquareFilled)
+            best_grid = minimax(tab, depth, depth, BOTVALUE, 1,
+                                tokens, width, height, nbSquareFilled)
             position = get_the_best_position(best_grid[1], tab, BOTVALUE)
             # print(f"best_grid calculé : \n{np.array(best_grid[1])}")
             print(f"best_position calculé : {position}")
@@ -354,8 +371,8 @@ def best_position_func(
             messagebox.showinfo("fin du jeu", "pas de gagnant")
             return
 
-        best_grid = minimax(tab, 1, 1, HUMANVALUE, 1, tokens,
-                            width, height, nbSquareFilled)
+        best_grid = minimax(tab, 1, 1, HUMANVALUE, 1,
+                            tokens, width, height, nbSquareFilled)
         print(f"la grille de la best position : {best_grid[1]}")
         pos = get_the_best_position(best_grid[1], tab, HUMANVALUE)
         if pos is not None:

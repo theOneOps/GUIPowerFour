@@ -1,5 +1,5 @@
 ## @file motor.py
-## This file contains the main function to launch the program
+## The motor file contains the main function to launch the program
 
 
 """
