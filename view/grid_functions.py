@@ -77,10 +77,11 @@ def create_board(
     global tourJeu
     global finishG
 
+    # we initialize all the global variables
     nbSquareFilled = 0
     tourJeu = 0
     finishG = True
-    # Create a 2D array to store the circles
+    # Creation of the 2D array to store the circles
     tab = [[-1 for _ in range(width)] for _ in range(height)]
     stack = []
 
@@ -128,16 +129,20 @@ def create_board(
         x = 0
         y += cell_size + padding
 
-    # if who_starts == 2 at the beginning: then we nned to pick
+    # if who_starts == 2 at the beginning: then we need to pick
     # a random value to know who starts
     if who_starts == 2:
         # we pick a random value between 0 and 1
         rand_value: int = secrets.randbelow(2)
         # if the value is 0, then the bot starts
         if rand_value == 0:
+            # we get the best position for the bot
             best_grid = minimax(tab, depth, depth, BOTVALUE, 1,
                                 tokens, width, height, nbSquareFilled)
             pos = get_the_best_position(best_grid[1], tab, BOTVALUE)
+            # we check if the position is not None, because if it is None,
+            # then it means that the board is full or there is a problem with
+            # the minimax algorithm... so we need to stop the game
             if pos is not None:
                 update_game_state(
                     canvas, pos[1], 0, bot_color, width, height, tokens
@@ -145,9 +150,13 @@ def create_board(
 
     # if the value is 0 at the beginning, then the bot starts
     elif who_starts == 0:
+        # so, we will just call the minimax algorithm to get the best position
+        # for the bot
         best_grid = minimax(tab, depth, depth, BOTVALUE, 1, tokens,
                             width, height, nbSquareFilled)
         pos = get_the_best_position(best_grid[1], tab, BOTVALUE)
+        # and again, we just check to determine if the board is full or not
+        # and if there is a problem with the minimax algorithm
         if pos is not None:
             update_game_state(
                 canvas, pos[1], 0, bot_color, width, height, tokens
@@ -191,7 +200,7 @@ def update_game_state(
             # if the cell is empty
             if tab[row][col] == -1:
                 tab[row][col] = player
-                print(f"best_position joué : {[row, col]}")
+                # print(f"best_position joué : {[row, col]}")
                 # add the position to the stack
                 stack.append([row, col])
                 # check if the game is over (if there is a winner)
@@ -208,13 +217,14 @@ def update_game_state(
                 canvas.itemconfig(f"circle_{row}_{col}", fill=color)
                 # increment the number of cell filled
                 nbSquareFilled += 1
-                # if the game is over
+                # if the game is over, and there is a winner
                 if not finishG:
                     # if the player is the human
                     if player == 1:
                         messagebox.showinfo("victoire",
                                             "Vous avez gagné !")
                     else:
+                        # the player is the bot
                         messagebox.showinfo("victoire",
                                             "Le bot a gagné !")
                     return
@@ -251,19 +261,32 @@ def fill_cell(
 
     # if the game is not over
     if finishG:
+        # if there is not a place to play
         if nbSquareFilled == height * width:
-            messagebox.showinfo("fin du jeu", "pas de gagnant")
+            messagebox.showinfo("fin du jeu", "pas de gagnant, "
+                                              "match nul")
             return
+
         # if there is still a place to play
         if tab[0][col] == -1:
+            # update the game's board with the human's position
             update_game_state(canvas, col, 1, human_color, width,
                               height, tokens)
             tourJeu += 1
         else:
             return
     else:
-        messagebox.showinfo("fin du jeu",
-                            "on a déjà un gagnant !")
+        # if the game is already over
+        pos: Pos_t = stack[-1]
+        if pos is not None:
+            if tab[pos[0]][pos[1]] == 1:
+                messagebox.showinfo("fin du jeu",
+                                    "vous avez déjà gagné !")
+            else:
+                messagebox.showinfo("fin du jeu",
+                                    "le bot a déjà gagné !")
+        # messagebox.showinfo("fin du jeu",
+        #                     "on a déjà un gagnant !")
         return
 
     # if it's the bot's turn
@@ -280,8 +303,8 @@ def fill_cell(
                                 tokens, width, height, nbSquareFilled)
             position = get_the_best_position(best_grid[1], tab, BOTVALUE)
             # print(f"best_grid calculé : \n{np.array(best_grid[1])}")
-            print(f"best_position calculé : {position}")
-            print(f"stack  :  {stack}")
+            # print(f"best_position calculé : {position}")
+            # print(f"stack  :  {stack}")
 
             # print(f"score {position[0]} |position joué par le bot : "
             #       f" {position[1]}")
@@ -368,12 +391,13 @@ def best_position_func(
 
     if finishG:
         if nbSquareFilled == height * width:
-            messagebox.showinfo("fin du jeu", "pas de gagnant")
+            messagebox.showinfo("fin du jeu", "pas de gagnant, "
+                                              "match nul")
             return
 
-        best_grid = minimax(tab, 1, 1, HUMANVALUE, 1,
+        best_grid = minimax(tab, depth, depth, HUMANVALUE, 1,
                             tokens, width, height, nbSquareFilled)
-        print(f"la grille de la best position : {best_grid[1]}")
+        # print(f"la grille de la best position : {best_grid[1]}")
         pos = get_the_best_position(best_grid[1], tab, HUMANVALUE)
         if pos is not None:
             # update the game's board with the best position for the human
@@ -388,14 +412,22 @@ def best_position_func(
             )
             tourJeu += 1
     else:
-        messagebox.showinfo("fin du jeu", "on a déjà un gagnant !")
+        pos: Pos_t = stack[-1]
+        if pos is not None:
+            if tab[pos[0]][pos[1]] == 1:
+                messagebox.showinfo("fin du jeu",
+                                    "vous avez déjà gagné !")
+            else:
+                messagebox.showinfo("fin du jeu",
+                                    "le bot a déjà gagné !")
+        # messagebox.showinfo("fin du jeu", "on a déjà un gagnant !")
         return
 
     # the bot's turn
     if finishG:
         if nbSquareFilled < height * width:
 
-            best_grid = minimax(tab, 2, 2, BOTVALUE,
+            best_grid = minimax(tab, depth, depth, BOTVALUE,
                                 1, tokens,
                                 width, height, nbSquareFilled)
             pos = get_the_best_position(best_grid[1], tab, BOTVALUE)

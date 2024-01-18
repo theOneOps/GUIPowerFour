@@ -182,9 +182,11 @@ def define_button(
         columnspan: bool = False,
         width: int = 5,
         anchor: str = "center",
+        bg: str = "#f1f1f1",
 ) -> Button:
     """
     @brief This function create a button
+    :param bg: the background color of the button
     :param parent: the parent of the button
     :param function: the function that will be called when the button
     is clicked
@@ -194,7 +196,7 @@ def define_button(
     :param columnspan: a boolean to know if the button will span on 2 columns
     :param width: the width of the current's button
     :param anchor: the anchor to position the text in the button
-    :return: the button
+    :return: the button based on the parameters
     """
     btn: Button = Button(parent, text=string, command=function, width=width,
                          anchor=anchor, justify=CENTER)
@@ -202,4 +204,5 @@ def define_button(
         btn.grid(column=col, row=row, columnspan=2, pady=20)
     else:
         btn.grid(column=col, row=row, pady=20)
+    btn.config(bg=bg)
     return btn

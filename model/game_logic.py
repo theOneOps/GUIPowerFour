@@ -55,11 +55,15 @@ def finish_range_horizontal(
     :param height: the height of the grid
     :return: the result of the check
     """
-    # the idea is to check if the player has nb_tokens tokens aligned in horizontal
-    # to do that, we start the check from the position x - nb_tokens + 1, becuase we want to check
-    # the nb_tokens tokens before the position posx, and we finish the check at the position posx + nb_tokens
+    # the idea is to check if the player has nb_tokens tokens aligned
+    # in horizontal
+    # to do that, we start the check from the position x - nb_tokens + 1,
+    # becuase we want to check
+    # the nb_tokens tokens before the position posx, and we finish the
+    # check at the position posx + nb_tokens
     # because we want to check the nb_tokens tokens after the position posx
-    # basically, we check if the player has nb_tokens tokens aligned in horizontal left and right of the position posx
+    # basically, we check if the player has nb_tokens tokens aligned
+    # in horizontal left and right of the position posx
     # and posy entering the function
 
     x: int = posx
@@ -74,9 +78,11 @@ def finish_range_horizontal(
             else:
                 count = 0
         if count == nb_tokens:
-            # as soon as we get the number oh nb_tokens aligned, we stop the check
+            # as soon as we get the number oh nb_tokens aligned,
+            # we stop the check
             break
-    # wez return True if the player has nb_tokens tokens aligned in horizontal else False
+    # wez return True if the player has nb_tokens tokens aligned
+    # in horizontal else False
     return True if count == nb_tokens else False
 
 
@@ -100,11 +106,15 @@ def finish_range_vertical(
     :param height: the height of the grid
     :return: the result of the check
     """
-    # the idea is to check if the player has nb_tokens tokens aligned in vertical
-    # to do that, we start the check from the position y - nb_tokens + 1, because we want to check
-    # the nb_tokens tokens before the position posy, and we finish the check at the position posy + nb_tokens
+    # the idea is to check if the player has nb_tokens tokens aligned
+    # in vertical
+    # to do that, we start the check from the position y - nb_tokens + 1,
+    # because we want to check
+    # the nb_tokens tokens before the position posy, and we finish the check
+    # at the position posy + nb_tokens
     # because we want to check the nb_tokens tokens after the position posy
-    # basically, we check if the player has nb_tokens tokens aligned in vertical up and down of the position posx
+    # basically, we check if the player has nb_tokens tokens aligned in
+    # vertical up and down of the position posx
     # and posy entering the function
     x: int = posx
     y: int = posy
@@ -116,7 +126,8 @@ def finish_range_vertical(
             else:
                 count = 0
         if count == nb_tokens:
-            # as soon as we get the number oh nb_tokens aligned, we stop the check
+            # as soon as we get the number oh nb_tokens aligned,
+            # we stop the check
             break
 
     return True if count == nb_tokens else False
@@ -143,11 +154,15 @@ def finish_range_haut_gauche(
     :return: the result of the check
     """
 
-    # the idea is to check if the player has nb_tokens tokens aligned in left diagonal up to the right diagonal down
-    # to do that, we start the check from the position x - nb_tokens + 1, becuase we want to check
-    # the nb_tokens tokens before the position posx, and we finish the check at the position posx + nb_tokens
+    # the idea is to check if the player has nb_tokens tokens
+    # aligned in left diagonal up to the right diagonal down
+    # to do that, we start the check from the position x - nb_tokens + 1,
+    # becuase we want to check
+    # the nb_tokens tokens before the position posx, and we finish the check at
+    # the position posx + nb_tokens
     # because we want to check the nb_tokens tokens after the position posx
-    # basically, we check if the player has nb_tokens tokens aligned in left diagonal up and right diagonal down
+    # basically, we check if the player has nb_tokens tokens aligned in left
+    # diagonal up and right diagonal down
     # of the position posx and posy entering the function
 
     x: int = posx
@@ -160,7 +175,8 @@ def finish_range_haut_gauche(
             else:
                 count = 0
         if count == nb_tokens:
-            # as soon as we get the number oh nb_tokens aligned, we stop the check
+            # as soon as we get the number oh nb_tokens aligned,
+            # we stop the check
             break
         y += 1
 
@@ -197,11 +213,13 @@ def finish_range_bas_gauche(
             else:
                 count = 0
         if count == nb_tokens:
-            # as soon as we get the number oh nb_tokens aligned, we stop the check
+            # as soon as we get the number oh nb_tokens aligned, we
+            # stop the check
             break
         # we decrement y because we want to check the right diagonal down
         y -= 1
-    # we return True if the player has nb_tokens tokens aligned in right diagonal else False
+    # we return True if the player has nb_tokens tokens aligned in right
+    # diagonal else False
     return True if count == nb_tokens else False
 
 
@@ -221,8 +239,10 @@ def finish_range_in_all_directions(
     :param height: the height of the grid
     :return: the result of the check
     """
-    # we call all the functions that check if the player has nb_tokens tokens aligned in all directions
-    # (horizontal, vertical, up left diagonal to right diagonal down, and up right diagonal to left diagonal down)
+    # we call all the functions that check if the player has nb_tokens tokens
+    # aligned in all directions
+    # (horizontal, vertical, up left diagonal to right diagonal down, and up
+    # right diagonal to left diagonal down)
     return (
             finish_range_vertical(player, x, y, tab, token, width, height) or
             finish_range_horizontal(player, x, y, tab, token, width, height) or
@@ -317,7 +337,8 @@ def launch_game(
     """
 
     res: bool
-    # if the turn is even, it's the human's turn to play, so we call the function play_human
+    # if the turn is even, it's the human's turn to play,
+    # so we call the function play_human
     # to verify if the human has won
     if tour_jeu % 2 == 0:
         res = play_human(tab, HUMANVALUE, the_pos, finishgame, tokens, width,

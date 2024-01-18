@@ -175,19 +175,14 @@ def init_config_frame(window) -> Frame:
         global human_color
         color_tuple = askcolor(title=f"Choose the color of the {player}")
 
-        if color_tuple is None:  # Check if the user canceled the askcolor
-            # the color selection
+        # Check if the user canceled the askcolor selection
+        if color_tuple is not None and color_tuple[1] is not None:
+            color: str = str(color_tuple[1])  # Get the color string
             if player == "Bot":
-                btn.config(bg=bot_color)
-            else:
-                btn.config(bg=human_color)
-        else:
-            color = str(color_tuple[1])  # Get the color string
-            if player == "Bot":
-                bot_color = str(color)
+                bot_color = color
                 btn_bot_color.config(bg=bot_color)
             else:
-                human_color = str(color)
+                human_color = color
                 btn_human_color.config(bg=human_color)
 
     # the spinbox for the width and the label that will be displayed next to
@@ -285,9 +280,8 @@ def init_config_frame(window) -> Frame:
         1,
         0,
         width=3,
+        bg=bot_color
     )
-
-    btn_bot_color.config(bg=bot_color)
 
     # the frame that will contain the color of the human(entry), the color
     # of the human, and the button to change the color of the human
@@ -306,9 +300,8 @@ def init_config_frame(window) -> Frame:
         1,
         0,
         width=3,
+        bg=human_color
     )
-
-    btn_human_color.config(bg=human_color)
 
     # the button to quit the game
     quitBtn: Button = define_button(
@@ -484,13 +477,13 @@ def define_game_play(window) -> Frame:
         if string == "reverse":
             reversetrump += 1
             label_reverse_board_count.config(text=f"used: {reversetrump}")
-            print("Reverse the " "board")
+            # print("Reverse the " "board")
             reverse_board(grid_tab, height, width, human_color, bot_color)
 
         elif string == "best":
             bestpositiontrump += 1
             label_best_pos_count.config(text=f"used: {bestpositiontrump}")
-            print("best Position " "launched")
+            # print("best Position " "launched")
             best_position_func(
                 grid_tab, width, height, nb_tokens, human_color, bot_color,
                 depth=level
@@ -499,7 +492,7 @@ def define_game_play(window) -> Frame:
         else:
             comebacktrump += 1
             label_come_back_count.config(text=f"used: {comebacktrump}")
-            print("come back")
+            # print("come back")
             come_back_func(grid_tab, human_color, bot_color, height)
 
     # the section for the reverse board's Button
