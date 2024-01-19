@@ -93,7 +93,7 @@ def create_board(
         height=height * (cell_size + padding) + 4,
         borderwidth=0,
         highlightthickness=0,
-        bg='blue',
+        bg='#8CB9BC',
     )
 
     for row in range(height):

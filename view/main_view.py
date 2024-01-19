@@ -24,9 +24,9 @@ nb_tokens: int = 4
 ## the level of the bot
 level = 2
 ## the color of the bot on the game's board
-bot_color = "red"
+bot_color = "crimson"
 ## the color of the human on the game's board
-human_color = "yellow"
+human_color = "gold"
 ## variable to keep track of the number of comeback trump used
 comebacktrump: int = 0
 ## variable to keep track of the number of best position trump used
@@ -67,7 +67,7 @@ def init_config_frame(window) -> Frame:
     # the title of the game
     label_title: Label = define_label(
         container_frame, "Welcome dear User !", 15,
-        0, 1, True
+        0, 1, True, fill="goldenrod"
     )
 
     # the canvas that will contain the image of the game or a text if the
@@ -116,7 +116,7 @@ def init_config_frame(window) -> Frame:
     label_options: Label = define_label(container_frame,
                                         "Options",
                                         15, 0, 3,
-                                        True)
+                                        True, fill="goldenrod")
 
     # the frame that will contain the spinbox for the width
     fst_frame: Frame = define_frame(container_frame, 0, 5)
@@ -215,7 +215,7 @@ def init_config_frame(window) -> Frame:
     trd_frame: Frame = define_frame(container_frame, 0, 6)
     spinbox_level: Spinbox = define_spinbox(
         trd_frame, change_value_level, 1,
-        10, 0, 0, value_var=level_var
+        5, 0, 0, value_var=level_var
     )
 
     label_level: Label = define_label(trd_frame, "level",
@@ -237,7 +237,7 @@ def init_config_frame(window) -> Frame:
 
     label_who_start: Label = define_label(
         container_frame, "who start first ?", 10, 0,
-        7, True, fill="red"
+        7, True, fill="goldenrod"
     )
     radio_state = IntVar()
     radio_state.set(2)
@@ -305,18 +305,21 @@ def init_config_frame(window) -> Frame:
 
     # the button to quit the game
     quitBtn: Button = define_button(
-        container_frame, lambda: window.quit(), "Quit", 0, 10
+        container_frame, lambda: window.quit(), "Quit", 0, 10,
+        font_size=12,
     )
     # the button to see the help of the config page, helps about the options
 
     helpBtn: Button = define_button(
         container_frame, lambda: help_function(1), "Help",
-        0, 10, True
+        0, 10, True,
+        font_size=12,
     )
     # the button to launch the game
     startBtn: Button = define_button(
         container_frame, lambda: define_game_play(window),
-        "Start", 1, 10
+        "Start", 1, 10,
+        font_size=12,
     )
 
     container_frame.config(pady=0)
@@ -353,16 +356,17 @@ def define_game_play(window) -> Frame:
     return_btn = define_button(
         gamePlay, lambda: init_config_frame(window),
         "Return", 0,
-        0
+        0,
+        font_size=12,
     )
     # the button to get helps about the game
     help_btn = define_button(gamePlay, lambda: help_function(0),
                              "Help", 0, 0,
-                             True)
+                             True, font_size=12, )
 
     # the button to quit the game
     quit_btn = define_button(gamePlay, lambda: window.quit(),
-                             "Quit", 1, 0)
+                             "Quit", 1, 0, font_size=12, )
 
     # the label to print the number of tokens to align in effort to win
     label_print_nb_tokens = define_label(
@@ -387,6 +391,7 @@ def define_game_play(window) -> Frame:
         highlightthickness=0,
     )
     canvas_bot_color.grid(row=0, column=1)
+    canvas_bot_color.config(bg="#255369")
 
     # the circle that will be displayed on the canvas to show the bot's color
     circle = canvas_bot_color.create_oval(
@@ -409,6 +414,7 @@ def define_game_play(window) -> Frame:
         highlightthickness=0,
     )
     canvas_human_color.grid(row=0, column=1)
+    canvas_human_color.config(bg="#255369")
 
     # the circle that will be displayed on the canvas to show the human's color
     circle = canvas_human_color.create_oval(
@@ -425,30 +431,35 @@ def define_game_play(window) -> Frame:
 
     print(f"HEIGHT is : {height}\n")
 
-    board_frame: Frame = define_frame(gamePlay, 0, 3, columnspan=True)
+    board_frame: LabelFrame = define_lb_frame(gamePlay, 0, 3, columnspan=True)
+    board_frame.config(relief="sunken", highlightcolor="black",
+                       bg="#F8E5B5")
     global radio_state
     # canvas to print the game's board
     grid_tab: Canvas = create_board(
         board_frame, width, height, CELL_SIZE, human_color, bot_color,
         tokens=nb_tokens, who_starts=radio_state.get(), depth=level
     )
-    grid_tab.grid(row=0, column=0, columnspan=2)
+    grid_tab.grid(row=0, column=0, columnspan=2, padx=10)
 
     # the trump 's frame
     # the frame that will contain all the trump's buttons and labels that will
     # show the number of times the trump has been used
 
     all_trumps_frame: Frame = define_frame(board_frame, 2, 0)
-    all_trumps_frame.config(padx=50)
+    all_trumps_frame.config(bg="#9cc7d6")
+    all_trumps_frame.config(padx=20)
 
     label_all_trumps: Label = define_label(all_trumps_frame,
                                            "All trumps Card",
                                            15, 0,
-                                           0, True)
-    label_all_trumps.config(pady=5)
+                                           0, bg="#9cc7d6",
+                                           columnspan=True)
+    label_all_trumps.config(pady=5, fg="black")
 
     trump_comeback_frame: Frame = define_frame(all_trumps_frame, 0, 1,
                                                columnspan=False)
+    trump_comeback_frame.config(bg="#9cc7d6")
 
     # the section for the comeback Button
 
@@ -456,7 +467,10 @@ def define_game_play(window) -> Frame:
         trump_comeback_frame, lambda: increment_count("comeback"),
         "come back",
         0, 0,
-        width=11, anchor="w"
+        width=11, anchor="w",
+        font_size=15,
+        bg="#696464",
+        color="white"
     )
 
     label_come_back_count: Label = define_label(trump_comeback_frame,
@@ -500,11 +514,15 @@ def define_game_play(window) -> Frame:
     trump_reverse_board_frame: Frame = define_frame(all_trumps_frame, 0,
                                                     2,
                                                     columnspan=True)
+    trump_reverse_board_frame.config(bg="#9cc7d6")
 
     btn_reverse_board: Button = define_button(
         trump_reverse_board_frame, lambda: increment_count("reverse"),
         "reverse board", 0, 0,
-        width=14, anchor="w"
+        width=14, anchor="w",
+        font_size=15,
+        bg="#696464",
+        color="white"
     )
 
     label_reverse_board_count: Label = define_label(
@@ -516,11 +534,15 @@ def define_game_play(window) -> Frame:
 
     trump_btn_pos_frame: Frame = define_frame(all_trumps_frame, 0, 3,
                                               columnspan=False)
+    trump_btn_pos_frame.config(bg="#9cc7d6")
 
     btn_best_pos: Button = define_button(
         trump_btn_pos_frame, lambda: increment_count("best"),
         "best position", 0, 0,
-        width=12
+        width=12,
+        font_size=15,
+        bg="#696464",
+        color="white"
     )
 
     label_best_pos_count: Label = define_label(trump_btn_pos_frame,
@@ -530,7 +552,7 @@ def define_game_play(window) -> Frame:
 
     # the reset button to reset the game's board
     reset_btn = define_button(gamePlay, lambda: define_game_play(window),
-                              "Reset", 1, 6)
+                              "Reset", 1, 6, font_size=12, )
 
     return gamePlay
 
@@ -557,7 +579,8 @@ changes the other to maintain a SQUARE board.
     \b Bot Difficulty LEVEL:\nChoose the bot's skill level. Higher levels
     result
     in a more challenging bot, but it may take more time to
-    make moves (we recommend level LOWER THAN 6 for a good balance).
+    make moves (we recommend level LOWER THAN 4 for a good balance), for \
+    a board of size over than 8.
 
     \b Tokens to Align (the spinbox's TOKENS):\nSet the number of tokens
     required for a player to win the game.

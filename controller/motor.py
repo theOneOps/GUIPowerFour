@@ -19,7 +19,7 @@ WINDOWWIDTH: int = 300
 WINDOWHEIGHT: int = 500
 
 ## background's color of the window
-PINK: str = "#F8E5E5"
+PINK: str = "#255369"
 
 
 def init_game():

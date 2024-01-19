@@ -1,4 +1,4 @@
-"""
+"""!
   @brief A program that plays Power/ Connect 4
   @mainpage P4++ Project
     @section description_main Description
