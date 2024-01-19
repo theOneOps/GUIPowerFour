@@ -14,7 +14,7 @@ from tkinter import *
 PINK: str = "#255369"
 FRAMEWIDTH: int = 100
 FRAMEHEIGHT: int = 50
-FRAMEPAD: int = 10
+FRAMEPAD: int = 5
 
 
 def define_spinbox(

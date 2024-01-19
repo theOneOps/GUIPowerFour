@@ -29,6 +29,7 @@ def init_game():
     """
     # Create the window
     window = Tk()
+
     # Set the window's size
     window.minsize(width=WINDOWWIDTH, height=WINDOWHEIGHT)
     game_config_frame = vue.init_config_frame(window)
