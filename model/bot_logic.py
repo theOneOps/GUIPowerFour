@@ -1,7 +1,7 @@
 ## @file bot_logic.py
 ## This file contains all the funtions to determine the best move for the bot
 ## and the random move's one
-"""
+"""!
 @package model
 @file: bot_logic.py
 @desc This file contains all the funtions to determine
@@ -11,12 +11,12 @@ the best move for the bot or the random move's one
 import copy
 import secrets
 
-from .game_logic import finish_range_in_all_directions
+from .game_logic import mod_finish_range_in_all_directions
 from .game_types import Grid_t, Pos_t, StackPos_t
 
 
-def get_random_position(tab: Grid_t, height: int,
-                        width: int) -> Pos_t:
+def mod_get_random_position(tab: Grid_t, height: int,
+                            width: int) -> Pos_t:
     """
     @brief get a random position in the grid
     :param tab: the 2D array representing the grid
@@ -41,7 +41,7 @@ def get_random_position(tab: Grid_t, height: int,
     return None
 
 
-def match_null(height: int, width: int, nbsquarefilled: int) -> bool:
+def mod_match_null(height: int, width: int, nbsquarefilled: int) -> bool:
     """
     @brief check if the grid is full
     :param height: the height of the grid
@@ -54,7 +54,7 @@ def match_null(height: int, width: int, nbsquarefilled: int) -> bool:
     return False
 
 
-def positions_possibles(grid: Grid_t) -> list[Pos_t]:
+def mod_positions_possibles(grid: Grid_t) -> list[Pos_t]:
     """
     @brief get all the possible positions
     :param grid: the 2D array representing the grid
@@ -81,7 +81,7 @@ def positions_possibles(grid: Grid_t) -> list[Pos_t]:
     return l
 
 
-def evaluate(grid: Grid_t, player: int, max_player: int, max_length: int) \
+def mod_evaluate(grid: Grid_t, player: int, max_player: int, max_length: int) \
         -> int:
     """
     @brief evaluate the grid
@@ -112,9 +112,10 @@ def evaluate(grid: Grid_t, player: int, max_player: int, max_length: int) \
     for length in range(3, max_length + 1):
         # we add the score of the sequence of length 'length' to the score
         # the evaluation is done in horizontal, vertical and diagonal
-        score += (evaluate_horizontal(grid, player, length) +
-                  evaluate_vertical(grid, player, length) +
-                  evaluate_diagonal(grid, player, length)) * weights[length]
+        score += ((mod_evaluate_horizontal(grid, player, length) +
+                   mod_evaluate_vertical(grid, player, length) +
+                   mod_evaluate_diagonal(grid, player, length)) * weights[
+                      length])
 
     # Adjust the score for the minimizing player
     if not max_player:
@@ -123,11 +124,11 @@ def evaluate(grid: Grid_t, player: int, max_player: int, max_length: int) \
     return score
 
 
-def minimax(grid: Grid_t, truly_depth: int, depth: int, player: int,
-            max_player: int, nb_tokens: int, width: int,
-            height: int, nbsquarefilled: int, previous_player: int = -1,
-            pos: Pos_t
-            = None) -> (int, Grid_t):
+def mod_minimax(grid: Grid_t, truly_depth: int, depth: int, player: int,
+                max_player: int, nb_tokens: int, width: int,
+                height: int, nbsquarefilled: int, previous_player: int = -1,
+                pos: Pos_t
+                = None) -> (int, Grid_t):
     """
     @brief minimax algorithm
     :param grid: the 2D array representing the grid
@@ -145,16 +146,16 @@ def minimax(grid: Grid_t, truly_depth: int, depth: int, player: int,
     minimax algorithm
     """
     # we get all the possible positions from the current grid
-    l: list[Pos_t] = positions_possibles(grid)
+    l: list[Pos_t] = mod_positions_possibles(grid)
 
     # we check if the position is not None
     # if it is not None, it means a player has played a move
     # so we check if the player who played that move has won the game
     if pos is not None:
         # if the player who has played is the maximizing player and he has won
-        if (finish_range_in_all_directions(previous_player, pos[0], pos[1],
-                                           grid,
-                                           nb_tokens, width, height) and
+        if (mod_finish_range_in_all_directions(previous_player, pos[0], pos[1],
+                                               grid,
+                                               nb_tokens, width, height) and
                 max_player == 1):
             # we return minus infinity and the grid (basically, it means the
             # minimizing player has won the game)
@@ -164,9 +165,10 @@ def minimax(grid: Grid_t, truly_depth: int, depth: int, player: int,
             # so we want the max player to not play that move
             return float('-inf'), grid
         # if the player who has played is the minimizing player and he has won
-        elif (finish_range_in_all_directions(previous_player, pos[0], pos[1],
-                                             grid,
-                                             nb_tokens, width, height) and
+        elif (mod_finish_range_in_all_directions(previous_player, pos[0],
+                                                 pos[1],
+                                                 grid,
+                                                 nb_tokens, width, height) and
               max_player == 0):
             # we return plus infinity and the grid (basically, it means the
             # maximizing player has won the game)
@@ -177,7 +179,7 @@ def minimax(grid: Grid_t, truly_depth: int, depth: int, player: int,
             # the maximizing player
             return float('inf'), grid
 
-    if match_null(height, width, nbsquarefilled):
+    if mod_match_null(height, width, nbsquarefilled):
         # if it is a draw, then we return 0 for the score to mean that it is a
         # way to not lose the game and to not win the game (because again ,
         # when we win, the score is positive and when we lose, the score is
@@ -188,12 +190,12 @@ def minimax(grid: Grid_t, truly_depth: int, depth: int, player: int,
     # case when the truly depth is even
     if (depth == 0 or len(l) == 0) and truly_depth % 2 == 0:
         # Renvoie le score de la position et aucune position (None)
-        return evaluate(grid, 1 - player, 1 - max_player, nb_tokens), grid
+        return mod_evaluate(grid, 1 - player, 1 - max_player, nb_tokens), grid
 
     # case when the truly depth is odd
     if (depth == 0 or len(l) == 0) and truly_depth % 2 != 0:
         # Renvoie le score de la position et aucune position (None)
-        return evaluate(grid, player, max_player, nb_tokens), grid
+        return mod_evaluate(grid, player, max_player, nb_tokens), grid
 
     # if the player is the maximizing player
     if max_player:
@@ -212,10 +214,10 @@ def minimax(grid: Grid_t, truly_depth: int, depth: int, player: int,
             new_grid[current_pos[0]][current_pos[1]] = player
 
             # we recursively evaluate the next position
-            score, _ = minimax(new_grid, truly_depth, depth - 1, 1 - player,
-                               1 - max_player, nb_tokens,
-                               width, height, nbsquarefilled + 1,
-                               player, current_pos)
+            score, _ = mod_minimax(new_grid, truly_depth, depth - 1,
+                                   1 - player, 1 - max_player, nb_tokens,
+                                   width, height, nbsquarefilled + 1,
+                                   player, current_pos)
 
             # we update the best position and the score
             if score > value:
@@ -238,10 +240,10 @@ def minimax(grid: Grid_t, truly_depth: int, depth: int, player: int,
             new_grid[current_pos[0]][current_pos[1]] = player
 
             # we recursively evaluate the next position
-            score, _ = minimax(new_grid, truly_depth, depth - 1, 1 - player,
-                               1 - max_player,
-                               nb_tokens, width, height, nbsquarefilled + 1,
-                               player, current_pos)
+            score, _ = mod_minimax(new_grid, truly_depth, depth - 1,
+                                   1 - player, 1 - max_player, nb_tokens,
+                                   width, height, nbsquarefilled + 1,
+                                   player, current_pos)
 
             # we update the best position and the score
             if score < value:
@@ -258,7 +260,7 @@ def minimax(grid: Grid_t, truly_depth: int, depth: int, player: int,
     return value, best_grid
 
 
-def evaluate_horizontal(grid: Grid_t, player: int, length: int) -> int:
+def mod_evaluate_horizontal(grid: Grid_t, player: int, length: int) -> int:
     """
     @brief evaluate the grid in horizontal
     :param grid: the 2D array representing the grid
@@ -307,7 +309,7 @@ def evaluate_horizontal(grid: Grid_t, player: int, length: int) -> int:
     return count
 
 
-def evaluate_vertical(grid: Grid_t, player: int, length: int) -> int:
+def mod_evaluate_vertical(grid: Grid_t, player: int, length: int) -> int:
     """
     @brief evaluate the grid in vertical
     :param grid: the 2D array representing the grid
@@ -331,7 +333,7 @@ def evaluate_vertical(grid: Grid_t, player: int, length: int) -> int:
     return count
 
 
-def evaluate_diagonal(grid: Grid_t, player: int, length: int) -> int:
+def mod_evaluate_diagonal(grid: Grid_t, player: int, length: int) -> int:
     """
     @brief evaluate the grid in diagonal
     :param grid: the 2D array representing the grid
@@ -354,8 +356,9 @@ def evaluate_diagonal(grid: Grid_t, player: int, length: int) -> int:
             # so the 1 argument for direction indicates that it's checking
             # diagonal sequences from the top-left to the bottom-right.
             sequence = [grid[row + n][col + n] for n in range(length)]
-            count += evaluate_sequence_diagonal(grid, sequence, player, row,
-                                                col, 1)
+            count += mod_evaluate_sequence_diagonal(grid, sequence,
+                                                    player, row, col,
+                                                    1)
 
     # The function starts by checking diagonal sequences from the bottom-left
     # corner to the top-right corner (col and row loops).
@@ -365,15 +368,15 @@ def evaluate_diagonal(grid: Grid_t, player: int, length: int) -> int:
         # top-right, but the principle is the same
         for row in range(length - 1, len(grid)):
             sequence = [grid[row - n][col + n] for n in range(length)]
-            count += evaluate_sequence_diagonal(grid, sequence, player, row,
-                                                col, -1)
+            count += mod_evaluate_sequence_diagonal(grid, sequence, player,
+                                                    row, col, -1)
 
     return count
 
 
-def evaluate_sequence_diagonal(grid: Grid_t, sequence: list, player: int,
-                               start_row: int, start_col: int,
-                               direction: int):
+def mod_evaluate_sequence_diagonal(grid: Grid_t, sequence: list, player: int,
+                                   start_row: int, start_col: int,
+                                   direction: int):
     """
     @brief evaluate the sequence in diagonal
     :param grid: the 2D array representing the grid

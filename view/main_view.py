@@ -1,12 +1,11 @@
 ## @file main_view.py
 ## This file is the main view of the program with all the widgets linked
 
-"""
-
-## @package view
-## @file main_view.py
-## @description The main view of the game
-## @brief This file is the main view of the program with all the widgets linked
+"""!
+@package view
+@file main_view.py
+@description The main view of the game
+@brief This file is the main view of the program with all the widgets linked
 """
 from tkinter.colorchooser import askcolor
 
@@ -22,11 +21,11 @@ width: int = 6
 ## the number of tokens to win
 nb_tokens: int = 4
 ## the level of the bot
-level = 2
+level: int = 2
 ## the color of the bot on the game's board
-bot_color = "crimson"
+bot_color: str = "crimson"
 ## the color of the human on the game's board
-human_color = "gold"
+human_color: str = "gold"
 ## variable to keep track of the number of comeback trump used
 comebacktrump: int = 0
 ## variable to keep track of the number of best position trump used
@@ -35,9 +34,18 @@ bestpositiontrump: int = 0
 reversetrump: int = 0
 ## variable to keep track of who start first
 radio_state: IntVar
+## variable that represents the color of the border of the board
+BORDER_BOARD_COLOR: str = "#F8E5B5"
+## variable that represents the color of the background of the all trump's
+## frame
+ALL_TRUMPS_COLOR: str = "#9cc7d6"
+## variable that represents the color of the background of the game
+BACKGROUND_COLOR: str = "#255369"
+## variable that represents the color for all the title of the setting's page
+TITLE_COLOR: str = "goldenrod"
 
 
-def init_config_frame(window) -> Frame:
+def vie_init_config_frame(window) -> Frame:
     """
     @brief This function initialize create the first page of the game, the
     configuration page
@@ -56,18 +64,18 @@ def init_config_frame(window) -> Frame:
     global radio_state
 
     # the main frame that will contain all the widgets of the page
-    container_frame: Frame = define_frame(window, 0, 0, WINDOWWIDTH,
-                                          WINDOWHEIGHT)
+    container_frame: Frame = vie_define_frame(window, 0, 0, WINDOWWIDTH,
+                                              WINDOWHEIGHT)
 
     # this widget is used to initialize the grid property for the rest
     # of the widgets
-    nothing = Label(container_frame, text="", bg=PINK)
-    nothing.grid(column=0, row=0)
+    label_nothing = Label(container_frame, text="", bg=PINK)
+    label_nothing.grid(column=0, row=0)
 
     # the title of the game
-    label_title: Label = define_label(
+    label_title: Label = vie_define_label(
         container_frame, "Welcome dear User !", 15,
-        0, 1, True, fill="goldenrod"
+        0, 1, True, fill=TITLE_COLOR
     )
 
     # the canvas that will contain the image of the game or a text if the
@@ -113,13 +121,13 @@ def init_config_frame(window) -> Frame:
     # the label that will be displayed to show the users options that they
     # can change for the game
 
-    label_options: Label = define_label(container_frame,
-                                        "Options",
-                                        15, 0, 3,
-                                        True, fill="goldenrod")
+    label_options: Label = vie_define_label(container_frame,
+                                            "Options",
+                                            15, 0, 3,
+                                            True, fill=TITLE_COLOR)
 
     # the frame that will contain the spinbox for the width
-    fst_frame: Frame = define_frame(container_frame, 0, 5)
+    fst_frame: Frame = vie_define_frame(container_frame, 0, 5)
 
     # initialization of the spinboxes' values
     width_var: IntVar = IntVar()
@@ -187,93 +195,93 @@ def init_config_frame(window) -> Frame:
 
     # the spinbox for the width and the label that will be displayed next to
     # the spinbox's width
-    spinbox_width: Spinbox = define_spinbox(
+    spinbox_width: Spinbox = vie_define_spinbox(
         fst_frame, change_value_width,
         1, 9,
         0, 0, value_var=width_var
     )
 
-    label_width: Label = define_label(fst_frame, "width",
-                                      10, 1,
-                                      0, False)
+    label_width: Label = vie_define_label(fst_frame, "width",
+                                          10, 1,
+                                          0, False)
 
     # the second frame that will contain the spinbox for the height and the
     # label that will be displayed next to the spinbox's height
-    scd_frame: Frame = define_frame(container_frame, 1, 5)
-    spinbox_height: Spinbox = define_spinbox(
+    scd_frame: Frame = vie_define_frame(container_frame, 1, 5)
+    spinbox_height: Spinbox = vie_define_spinbox(
         scd_frame, change_value_width,
         1, 9, 0,
         0, value_var=width_var
     )
 
-    label_height: Label = define_label(scd_frame,
-                                       "height", 10, 1,
-                                       0, False)
+    label_height: Label = vie_define_label(scd_frame,
+                                           "height", 10, 1,
+                                           0, False)
 
     # the third frame that will contain the spinbox for the level and the
     # label that will be displayed next to the spinbox's level
-    trd_frame: Frame = define_frame(container_frame, 0, 6)
-    spinbox_level: Spinbox = define_spinbox(
+    trd_frame: Frame = vie_define_frame(container_frame, 0, 6)
+    spinbox_level: Spinbox = vie_define_spinbox(
         trd_frame, change_value_level, 1,
         5, 0, 0, value_var=level_var
     )
 
-    label_level: Label = define_label(trd_frame, "level",
-                                      10, 1, 0,
-                                      False)
+    label_level: Label = vie_define_label(trd_frame, "level",
+                                          10, 1, 0,
+                                          False)
 
     # the fourth frame that will contain the spinbox for the number of
     # tokens and the label that will be displayed next to the spinbox's number
-    fth_frame: Frame = define_frame(container_frame, 1,
-                                    6)
-    spinbox_nb_tokens: Spinbox = define_spinbox(
+    fth_frame: Frame = vie_define_frame(container_frame, 1,
+                                        6)
+    spinbox_nb_tokens: Spinbox = vie_define_spinbox(
         fth_frame, change_value_tokens, 1,
         9, 0, 0, value_var=nb_tokens_var
     )
 
-    label_nb_tokens: Label = define_label(fth_frame, "tokens",
-                                          10, 1,
-                                          0, False)
+    label_nb_tokens: Label = vie_define_label(fth_frame, "tokens",
+                                              10, 1,
+                                              0, False)
 
-    label_who_start: Label = define_label(
+    label_who_start: Label = vie_define_label(
         container_frame, "who start first ?", 10, 0,
-        7, True, fill="goldenrod"
+        7, True, fill=TITLE_COLOR
     )
     radio_state = IntVar()
     radio_state.set(2)
-    radio_bot: Radiobutton = define_radio(
-        container_frame, change_radio_value, "Bot", radio_state,
+    radio_bot_btn: Radiobutton = vie_define_radio(
+        container_frame, vie_change_radio_value, "Bot", radio_state,
         0, 0, 8
     )
 
-    radio_random: Radiobutton = define_radio(
-        container_frame, change_radio_value, "Random", radio_state,
+    radio_random: Radiobutton = vie_define_radio(
+        container_frame, vie_change_radio_value, "Random", radio_state,
         2, 0, 8
     )
     radio_random.grid(column=0, row=8, columnspan=2)
 
-    radio_human: Radiobutton = define_radio(
-        container_frame, change_radio_value, "Human", radio_state,
+    radio_human_btn: Radiobutton = vie_define_radio(
+        container_frame, vie_change_radio_value, "Human", radio_state,
         1, 1, 8
     )
 
     # the frame that will contain the color of the bot(entry), the color of
     # the bot, and the button to change the color of the bot
 
-    sth_frame: Frame = define_frame(container_frame, 0, 9,
-                                    columnspan=True)
+    sth_frame: Frame = vie_define_frame(container_frame, 0, 9,
+                                        columnspan=True)
 
     sth_frame.config(pady=0)
 
-    bot_color_frame: Frame = define_frame(sth_frame, 0, 0)
+    bot_color_frame: Frame = vie_define_frame(sth_frame, 0, 0)
     bot_color_frame.config(pady=0)
 
-    label_bot_color: Label = define_label(bot_color_frame, "Bot's color",
-                                          10,
-                                          0, 0,
-                                          False)
+    label_bot_color: Label = vie_define_label(bot_color_frame, "Bot's color",
+                                              10,
+                                              0, 0,
+                                              False)
 
-    btn_bot_color = define_button(
+    btn_bot_color = vie_define_button(
         bot_color_frame,
         lambda: colorChoose(btn_bot_color, "Bot"),
         " ",
@@ -285,15 +293,15 @@ def init_config_frame(window) -> Frame:
 
     # the frame that will contain the color of the human(entry), the color
     # of the human, and the button to change the color of the human
-    human_color_frame: Frame = define_frame(sth_frame, 1, 0)
+    human_color_frame: Frame = vie_define_frame(sth_frame, 1, 0)
     human_color_frame.config(pady=0)
 
-    label_human_color: Label = define_label(
+    label_human_color: Label = vie_define_label(
         human_color_frame, "Human's color", 10,
         0, 0, False
     )
 
-    btn_human_color = define_button(
+    btn_human_color = vie_define_button(
         human_color_frame,
         lambda: colorChoose(btn_human_color, "Human"),
         " ",
@@ -304,20 +312,20 @@ def init_config_frame(window) -> Frame:
     )
 
     # the button to quit the game
-    quitBtn: Button = define_button(
+    quit_btn: Button = vie_define_button(
         container_frame, lambda: window.quit(), "Quit", 0, 10,
         font_size=12,
     )
     # the button to see the help of the config page, helps about the options
 
-    helpBtn: Button = define_button(
-        container_frame, lambda: help_function(1), "Help",
+    help_btn: Button = vie_define_button(
+        container_frame, lambda: vie_help_function(1), "Help",
         0, 10, True,
         font_size=12,
     )
     # the button to launch the game
-    startBtn: Button = define_button(
-        container_frame, lambda: define_game_play(window),
+    start_btn: Button = vie_define_button(
+        container_frame, lambda: vie_define_game_play(window),
         "Start", 1, 10,
         font_size=12,
     )
@@ -328,7 +336,7 @@ def init_config_frame(window) -> Frame:
 
 
 # SECOND PAGE
-def define_game_play(window) -> Frame:
+def vie_define_game_play(window) -> Frame:
     """
     @brief This function initialize create the second page of the game, the
     game's page, with the game's board, the trump's buttons and others widgets
@@ -349,36 +357,36 @@ def define_game_play(window) -> Frame:
         widget.destroy()
 
     # the main frame that will contain all the widgets of the page
-    gamePlay: Frame = define_frame(window, 0, 0,
-                                   WINDOWHEIGHT, WINDOWWIDTH, 10)
+    gamePlay_frame: Frame = vie_define_frame(window, 0, 0,
+                                             WINDOWHEIGHT, WINDOWWIDTH, 10)
 
     # the button to return to the config page
-    return_btn = define_button(
-        gamePlay, lambda: init_config_frame(window),
+    return_btn = vie_define_button(
+        gamePlay_frame, lambda: vie_init_config_frame(window),
         "Return", 0,
         0,
         font_size=12,
     )
     # the button to get helps about the game
-    help_btn = define_button(gamePlay, lambda: help_function(0),
-                             "Help", 0, 0,
-                             True, font_size=12, )
+    help_btn = vie_define_button(gamePlay_frame, lambda: vie_help_function(0),
+                                 "Help", 0, 0,
+                                 True, font_size=12, )
 
     # the button to quit the game
-    quit_btn = define_button(gamePlay, lambda: window.quit(),
-                             "Quit", 1, 0, font_size=12, )
+    quit_btn = vie_define_button(gamePlay_frame, lambda: window.quit(),
+                                 "Quit", 1, 0, font_size=12, )
 
     # the label to print the number of tokens to align in effort to win
-    label_print_nb_tokens = define_label(
-        gamePlay, f"Number of tokens to win:" f" {nb_tokens}",
+    label_print_nb_tokens = vie_define_label(
+        gamePlay_frame, f"Number of tokens to win:" f" {nb_tokens}",
         20, 0,
         1, True
     )
 
     # frame to print the bot's color
-    color_of_the_bot_frame: Frame = define_frame(gamePlay, 0, 2)
+    color_of_the_bot_frame: Frame = vie_define_frame(gamePlay_frame, 0, 2)
     color_of_the_bot_frame.config(pady=10)
-    label_color_bot = define_label(
+    label_color_bot = vie_define_label(
         color_of_the_bot_frame, "Bot's color  ",
         10, 0,
         0, False
@@ -392,7 +400,7 @@ def define_game_play(window) -> Frame:
         highlightthickness=0,
     )
     canvas_bot_color.grid(row=0, column=1)
-    canvas_bot_color.config(bg="#255369")
+    canvas_bot_color.config(bg=BACKGROUND_COLOR)
 
     # the circle that will be displayed on the canvas to show the bot's color
     circle = canvas_bot_color.create_oval(
@@ -401,9 +409,9 @@ def define_game_play(window) -> Frame:
 
     # frame to print the human's color
 
-    color_of_the_human_frame: Frame = define_frame(gamePlay, 1, 2)
+    color_of_the_human_frame: Frame = vie_define_frame(gamePlay_frame, 1, 2)
     color_of_the_human_frame.config(pady=10)
-    label_color_human = define_label(
+    label_color_human = vie_define_label(
         color_of_the_human_frame, "Human's color  ", 10,
         0, 0, False
     )
@@ -416,30 +424,32 @@ def define_game_play(window) -> Frame:
         highlightthickness=0,
     )
     canvas_human_color.grid(row=0, column=1)
-    canvas_human_color.config(bg="#255369")
+    canvas_human_color.config(bg=BACKGROUND_COLOR)
 
-    # the circle that will be displayed on the canvas to show the human's color
+    # the circle that will be displayed on vie_the canvas to show the human's
+    # color
     circle = canvas_human_color.create_oval(
         0, 0, CELL_SIZE, CELL_SIZE, outline=f"{human_color}",
         fill=f"{human_color}"
     )
 
-    print(f"bot's color ! {bot_color}\n")
-    print(f"human's color ! {human_color}\n")
+    # print(f"bot's color ! {bot_color}\n")
+    # print(f"human's color ! {human_color}\n")
 
     # label to print who's turn it is...
 
-    print(f"WIDTH is : {width}\n")
+    # print(f"WIDTH is : {width}\n")
+    #
+    # print(f"HEIGHT is : {height}\n")
 
-    print(f"HEIGHT is : {height}\n")
-
-    board_frame: LabelFrame = define_lb_frame(gamePlay, 0, 3, columnspan=True)
-    board_frame.config(relief="sunken", highlightcolor="black",
-                       bg="#F8E5B5")
+    board_lb_frame: LabelFrame = vie_define_lb_frame(gamePlay_frame, 0, 3,
+                                                     columnspan=True)
+    board_lb_frame.config(relief="sunken", highlightcolor="black",
+                          bg=BORDER_BOARD_COLOR)
     global radio_state
     # canvas to print the game's board
-    grid_tab: Canvas = create_board(
-        board_frame, width, height, CELL_SIZE, human_color, bot_color,
+    grid_tab: Canvas = vie_create_board(
+        board_lb_frame, width, height, CELL_SIZE, human_color, bot_color,
         tokens=nb_tokens, who_starts=radio_state.get(), depth=level
     )
     grid_tab.grid(row=0, column=0, columnspan=2, padx=10)
@@ -448,19 +458,19 @@ def define_game_play(window) -> Frame:
     # the frame that will contain all the trump's buttons and labels that will
     # show the number of times the trump has been used
 
-    all_trumps_frame: Frame = define_frame(board_frame, 2, 0)
-    all_trumps_frame.config(bg="#9cc7d6")
+    all_trumps_frame: Frame = vie_define_frame(board_lb_frame, 2, 0)
+    all_trumps_frame.config(bg=ALL_TRUMPS_COLOR)
     all_trumps_frame.config(padx=20)
 
-    label_all_trumps: Label = define_label(all_trumps_frame,
-                                           "All trumps Card",
-                                           15, 0,
-                                           0, bg="#9cc7d6",
-                                           columnspan=True)
+    label_all_trumps: Label = vie_define_label(all_trumps_frame,
+                                               "All trumps Card",
+                                               15, 0,
+                                               0, bg="#9cc7d6",
+                                               columnspan=True)
     label_all_trumps.config(pady=5, fg="black")
 
-    trump_comeback_frame: Frame = define_frame(all_trumps_frame, 0, 1,
-                                               columnspan=False)
+    trump_comeback_frame: Frame = vie_define_frame(all_trumps_frame, 0, 1,
+                                                   columnspan=False)
 
     trump_comeback_frame.config(bg="#9cc7d6", padx=10)
 
@@ -468,7 +478,7 @@ def define_game_play(window) -> Frame:
 
     # the section for the comeback Button
 
-    come_back_btn: Button = define_button(
+    come_back_btn: Button = vie_define_button(
         trump_comeback_frame, lambda: increment_count("comeback"),
         "come back",
         0, 0,
@@ -480,11 +490,11 @@ def define_game_play(window) -> Frame:
 
     come_back_btn.config(padx=5)
 
-    label_come_back_count: Label = define_label(trump_comeback_frame,
-                                                "used: 0", 8,
-                                                1, 0,
-                                                True, bg="#9cc7d6",
-                                                fill="crimson")
+    label_come_back_count: Label = vie_define_label(trump_comeback_frame,
+                                                    "used: 0", 8,
+                                                    1, 0,
+                                                    True, bg="#9cc7d6",
+                                                    fill="crimson")
     label_come_back_count.config(padx=5)
 
     def increment_count(string: str) -> None:
@@ -501,13 +511,13 @@ def define_game_play(window) -> Frame:
             reversetrump += 1
             label_reverse_board_count.config(text=f"used: {reversetrump}")
             # print("Reverse the " "board")
-            reverse_board(grid_tab, height, width, human_color, bot_color)
+            vie_reverse_board(grid_tab, height, width, human_color, bot_color)
 
         elif string == "best":
             bestpositiontrump += 1
             label_best_pos_count.config(text=f"used: {bestpositiontrump}")
             # print("best Position " "launched")
-            best_position_func(
+            vie_best_position_func(
                 grid_tab, width, height, nb_tokens, human_color, bot_color,
                 depth=level
             )
@@ -516,16 +526,16 @@ def define_game_play(window) -> Frame:
             comebacktrump += 1
             label_come_back_count.config(text=f"used: {comebacktrump}")
             # print("come back")
-            come_back_func(grid_tab, human_color, bot_color, height)
+            vie_come_back_func(grid_tab, human_color, bot_color, height)
 
     # the section for the reverse board's Button
 
-    trump_reverse_board_frame: Frame = define_frame(all_trumps_frame, 0,
-                                                    2,
-                                                    columnspan=True)
+    trump_reverse_board_frame: Frame = vie_define_frame(all_trumps_frame, 0,
+                                                        2,
+                                                        columnspan=True)
     trump_reverse_board_frame.config(bg="#9cc7d6")
 
-    btn_reverse_board: Button = define_button(
+    reverse_board_btn: Button = vie_define_button(
         trump_reverse_board_frame, lambda: increment_count("reverse"),
         "reverse board", 0, 0,
         width=10, anchor="w",
@@ -534,9 +544,9 @@ def define_game_play(window) -> Frame:
         color="white"
     )
 
-    btn_reverse_board.config(padx=5)
+    reverse_board_btn.config(padx=5)
 
-    label_reverse_board_count: Label = define_label(
+    label_reverse_board_count: Label = vie_define_label(
         trump_reverse_board_frame, "used:0", 10, 1,
         0, False, bg="#9cc7d6",
         fill="crimson"
@@ -546,11 +556,11 @@ def define_game_play(window) -> Frame:
 
     # the section for the best Position Button
 
-    trump_btn_pos_frame: Frame = define_frame(all_trumps_frame, 0, 3,
-                                              columnspan=False)
+    trump_btn_pos_frame: Frame = vie_define_frame(all_trumps_frame, 0, 3,
+                                                  columnspan=False)
     trump_btn_pos_frame.config(bg="#9cc7d6")
 
-    btn_best_pos: Button = define_button(
+    best_pos_btn: Button = vie_define_button(
         trump_btn_pos_frame, lambda: increment_count("best"),
         "best position", 0, 0,
         width=10,
@@ -559,24 +569,25 @@ def define_game_play(window) -> Frame:
         color="white"
     )
 
-    btn_best_pos.config(padx=5)
+    best_pos_btn.config(padx=5)
 
-    label_best_pos_count: Label = define_label(trump_btn_pos_frame,
-                                               "used:0", 10,
-                                               1, 0,
-                                               False, bg="#9cc7d6",
-                                               fill="crimson")
+    label_best_pos_count: Label = vie_define_label(trump_btn_pos_frame,
+                                                   "used:0", 10,
+                                                   1, 0,
+                                                   False, bg="#9cc7d6",
+                                                   fill="crimson")
 
     label_best_pos_count.config(padx=5)
 
     # the reset button to reset the game's board
-    reset_btn = define_button(gamePlay, lambda: define_game_play(window),
-                              "Reset", 1, 6, font_size=12, )
+    reset_btn = vie_define_button(gamePlay_frame, lambda: vie_define_game_play(
+        window),
+                                  "Reset", 1, 6, font_size=12, )
 
-    return gamePlay
+    return gamePlay_frame
 
 
-def help_function(number: int) -> None:
+def vie_help_function(number: int) -> None:
     """
     @brief This function display the help of the game
     :param number: the number of the help to display (0 for the game's rule

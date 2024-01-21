@@ -1,6 +1,6 @@
 ## @file game_types.py
 ## This file contains the special types that are created
-"""
+"""!
 @package model
 @file game_types.py
 @desc This file contains the special types that are created
@@ -14,7 +14,7 @@ and used in the game
 # principles types
 
 ## type of each square of the grid
-Pos_t = tuple(list[int, int])
+Pos_t = tuple([int, int])
 
 ## stack of Pos to be aware of every token put on the grid in time
 StackPos_t = list[Pos_t]
