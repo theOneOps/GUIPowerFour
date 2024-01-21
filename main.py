@@ -66,14 +66,10 @@
     @subsection installsecond_subsection Run with a shell script or a batch
     file
 
-    You can also run the program using a shell script on linux or a batch file.
+    You can also run the program using a shell script or a batch file.
     To do this, you can use the following command:
     @code
-    install.bat on windows
-    @endcode
-    or
-    @code
-    sh install.sh on linux
+    install.bat
     @endcode
 
     And the program will install the required modules and then run the program.
