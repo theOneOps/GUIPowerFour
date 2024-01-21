@@ -71,10 +71,12 @@ You can also run the program using a shell script or a bash file. To do this,
 use the following command:
 
 ##### On Windows : just execute this line of code:
+Firstly go to the directory where the `install.bat` is located, and then run this command : 
 
 `.\install.bat`
 
 ##### On Linux : just execute this line of code:
+Firstly, go to the directory where the `install.sh` is located, and then run this command : 
 
 `sh install.sh`
 
