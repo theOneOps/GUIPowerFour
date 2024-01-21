@@ -63,10 +63,10 @@
     python main.py
     @endcode
 
-    @subsection installsecond_subsection Run with a shell script or a batch
+    @subsection installsecond_subsection Run with a shell script or a bash
     file
 
-    You can also run the program using a shell script or a batch file.
+    You can also run the program using a shell script or a bash file.
     To do this, you can use the following command:
     @code
     install.bat on windows

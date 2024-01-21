@@ -60,8 +60,8 @@ def mod_positions_possibles(grid: Grid_t) -> list[Pos_t]:
     :param grid: the 2D array representing the grid
     :return: the list of all the possible positions
     """
-    rows = len(grid)
-    cols = len(grid[0])
+    rows: int = len(grid)
+    cols: int = len(grid[0])
     l: list[Pos_t] = []
 
     # the idea is to loop through the grid to get the first empty position in
@@ -341,7 +341,7 @@ def mod_evaluate_diagonal(grid: Grid_t, player: int, length: int) -> int:
     :param length: the length of the sequence (the number of tokens to check)
     :return: the score value of the sequence
     """
-    count = 0
+    count: int = 0
     # The function starts by checking diagonal sequences from the top-left
     # corner to the bottom-right corner (col and row loops).
 
