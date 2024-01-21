@@ -69,7 +69,11 @@
     You can also run the program using a shell script or a batch file.
     To do this, you can use the following command:
     @code
-    install.bat
+    install.bat on windows
+    @endcode
+    or
+    @code
+    install.sh on linux
     @endcode
 
     And the program will install the required modules and then run the program.
