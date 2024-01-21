@@ -1,7 +1,7 @@
 ## @file widgets_functions.py
 ## This file contains all the functions to create the widgets
 
-"""
+"""!
 @package view
 @file widgets_functions.py
 @desc This file contains all the functions to create the widgets
@@ -17,7 +17,7 @@ FRAMEHEIGHT: int = 50
 FRAMEPAD: int = 5
 
 
-def define_spinbox(
+def vie_define_spinbox(
         frameparent: Frame,
         func,
         from_: int,
@@ -53,7 +53,7 @@ def define_spinbox(
     return spin
 
 
-def define_frame(
+def vie_define_frame(
         root: Tk | Frame,
         col: int,
         row: int,
@@ -83,7 +83,7 @@ def define_frame(
     return frame
 
 
-def define_lb_frame(
+def vie_define_lb_frame(
         root: Tk | Frame,
         col: int,
         row: int,
@@ -114,7 +114,7 @@ def define_lb_frame(
     return frame
 
 
-def define_label(
+def vie_define_label(
         parent,
         text: str,
         font_size: int,
@@ -147,26 +147,7 @@ def define_label(
     return label
 
 
-def define_entry(parent: Frame, width: int, string: str, col: int, row: int) \
-        -> (
-                Entry):
-    """
-    @brief This function create an entry
-    :param parent: the parent of the entry
-    :param width: the width of the entry
-    :param string: the string that will be in the entry
-    :param col: the column where the entry will be
-    :param row: the row where the entry will be
-    :return: the entry
-    """
-    entry: Entry = Entry(parent, width=width)
-    entry.insert(END, string=string)
-    entry.grid(column=col, row=row)
-
-    return entry
-
-
-def define_radio(
+def vie_define_radio(
         parent: Frame, function, string: str, variable: IntVar, value: int,
         col: int,
         row: int
@@ -200,17 +181,18 @@ def define_radio(
 
 
 # function for the radioButton's function (This will change later)
-def change_radio_value(value: IntVar) -> None:
+def vie_change_radio_value(value: IntVar) -> None:
     """
     @brief This function is the function that will be called when the radio
     button got clicked
     :param value: the value of the radio button
     :return: None
     """
-    print(value.get())
+    # print(value.get())
+    pass
 
 
-def define_button(
+def vie_define_button(
         parent,
         function,
         string: str,

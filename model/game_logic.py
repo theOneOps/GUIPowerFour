@@ -2,7 +2,7 @@
 ## This file contains all the funtions needed to play the game
 ## except the bot's logic
 
-"""
+"""!
 @package model
 @file: game_logic.py
 @desc: This file contains all the funtions needed to play the game
@@ -22,7 +22,7 @@ BOTVALUE: int = 0
 
 
 # vérifier si la position jouée est valide ou pas ...
-def valid_coord(x: int, y: int, width: int, height: int) -> bool:
+def mod_valid_coord(x: int, y: int, width: int, height: int) -> bool:
     """
     @brief Verify if the position played is valid or not
     :param x: the x position to check between 0 and width
@@ -35,7 +35,7 @@ def valid_coord(x: int, y: int, width: int, height: int) -> bool:
     return (0 <= x < width) and (0 <= y < height)
 
 
-def finish_range_horizontal(
+def mod_finish_range_horizontal(
         player: int,
         posx: int,
         posy: int,
@@ -72,7 +72,7 @@ def finish_range_horizontal(
 
     # we start the check from the position x - nb_tokens + 1
     for i in range(x - nb_tokens + 1, x + nb_tokens):
-        if valid_coord(i, y, width, height):
+        if mod_valid_coord(i, y, width, height):
             if tab[i][y] == player:
                 count += 1
             else:
@@ -86,7 +86,7 @@ def finish_range_horizontal(
     return True if count == nb_tokens else False
 
 
-def finish_range_vertical(
+def mod_finish_range_vertical(
         player: int,
         posx: int,
         posy: int,
@@ -120,7 +120,7 @@ def finish_range_vertical(
     y: int = posy
     count: int = 0
     for i in range(y - nb_tokens + 1, y + nb_tokens):
-        if valid_coord(x, i, width, height):
+        if mod_valid_coord(x, i, width, height):
             if tab[x][i] == player:
                 count += 1
             else:
@@ -133,7 +133,7 @@ def finish_range_vertical(
     return True if count == nb_tokens else False
 
 
-def finish_range_haut_gauche(
+def mod_finish_range_haut_gauche(
         player: int,
         posx: int,
         posy: int,
@@ -169,7 +169,7 @@ def finish_range_haut_gauche(
     y: int = posy - nb_tokens + 1
     count: int = 0
     for i in range(x - nb_tokens + 1, x + nb_tokens):
-        if valid_coord(i, y, width, height):
+        if mod_valid_coord(i, y, width, height):
             if tab[i][y] == player:
                 count += 1
             else:
@@ -183,7 +183,7 @@ def finish_range_haut_gauche(
     return True if count == nb_tokens else False
 
 
-def finish_range_bas_gauche(
+def mod_finish_range_bas_gauche(
         player: int,
         posx: int,
         posy: int,
@@ -207,7 +207,7 @@ def finish_range_bas_gauche(
     y: int = posy + nb_tokens - 1
     count: int = 0
     for i in range(x - nb_tokens + 1, x + nb_tokens):
-        if valid_coord(i, y, width, height):
+        if mod_valid_coord(i, y, width, height):
             if tab[i][y] == player:
                 count += 1
             else:
@@ -224,7 +224,7 @@ def finish_range_bas_gauche(
 
 
 # appeler tous les finishRange en les réunissant en une seule fonction...
-def finish_range_in_all_directions(
+def mod_finish_range_in_all_directions(
         player: int, x: int, y: int, tab: Grid_t, token: int, width: int,
         height: int
 ) -> bool:
@@ -244,16 +244,19 @@ def finish_range_in_all_directions(
     # (horizontal, vertical, up left diagonal to right diagonal down, and up
     # right diagonal to left diagonal down)
     return (
-            finish_range_vertical(player, x, y, tab, token, width, height) or
-            finish_range_horizontal(player, x, y, tab, token, width, height) or
-            finish_range_haut_gauche(player, x, y, tab,
-                                     token, width, height) or
-            finish_range_bas_gauche(player, x, y, tab, token, width, height)
+            mod_finish_range_vertical(player, x, y, tab, token, width,
+                                      height) or
+            mod_finish_range_horizontal(player, x, y, tab, token, width,
+                                        height) or
+            mod_finish_range_haut_gauche(player, x, y, tab,
+                                         token, width, height) or
+            mod_finish_range_bas_gauche(player, x, y, tab, token, width,
+                                        height)
     )
 
 
 # fonction à lancer lors du tour du joueur bot
-def play_bot(
+def mod_play_bot(
         tab: Grid_t,
         player: int,
         finishgame: bool,
@@ -274,7 +277,7 @@ def play_bot(
     :return: the result of the check
     """
     # here we verify if the bot has won with the current position it has played
-    if finish_range_in_all_directions(
+    if mod_finish_range_in_all_directions(
             player, the_pos[0], the_pos[1], tab, token, width, height
     ):
         # if yes, we just change the value of the boolean finishgame to False
@@ -286,7 +289,7 @@ def play_bot(
 
 
 # fonction à lancer lors du tour du joueur humain
-def play_human(
+def mod_play_human(
         tab: Grid_t,
         player: int,
         theposition: Pos_t,
@@ -306,15 +309,15 @@ def play_human(
     :param height: the height of the grid
     :return: the result of the check
     """
-    if finish_range_in_all_directions(
+    if mod_finish_range_in_all_directions(
             player, theposition[0], theposition[1], tab, token, width, height
     ):
-        print("le joueur humain a gagné")
+        # print("le joueur humain a gagné")
         finishgame = False
     return finishgame
 
 
-def launch_game(
+def mod_launch_game(
         tab: Grid_t,
         width: int,
         height: int,
@@ -341,19 +344,20 @@ def launch_game(
     # so we call the function play_human
     # to verify if the human has won
     if tour_jeu % 2 == 0:
-        res = play_human(tab, HUMANVALUE, the_pos, finishgame, tokens, width,
-                         height)
+        res = mod_play_human(tab, HUMANVALUE, the_pos, finishgame, tokens,
+                             width,
+                             height)
 
     # else, it's the bot's turn to play, so we call the function play_bot
     else:
-        res = play_bot(tab, BOTVALUE, finishgame, tokens, width, height,
-                       the_pos)
-    print(f"tour de jeu: {tour_jeu} | finishGame : {res}")
+        res = mod_play_bot(tab, BOTVALUE, finishgame, tokens, width, height,
+                           the_pos)
+    # print(f"tour de jeu: {tour_jeu} | finishGame : {res}")
     # at the end we return the boolean finishgame
     return res
 
 
-def peek(stack: StackPos_t) -> Pos_t:
+def mod_peek(stack: StackPos_t) -> Pos_t:
     """
     @brief return the last element of the stack
     :param stack: the stack of positions played

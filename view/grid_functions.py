@@ -3,7 +3,7 @@
 ## grid and to fill it in and all trumps functions (come back, best position,
 # reverse board)
 
-"""
+"""!
 @file grid_functions.py
 @description This file contains all the functions that are used to create the
 grid and to fill it in
@@ -45,7 +45,7 @@ WINDOWWIDTH: int = 300
 WINDOWHEIGHT: int = 530
 
 
-def create_board(
+def vie_create_board(
         parent,
         width: int,
         height: int,
@@ -120,7 +120,7 @@ def create_board(
             canvas.tag_bind(
                 circle,
                 "<Button-1>",
-                lambda event, c=col: fill_cell(
+                lambda event, c=col: vie_fill_cell(
                     canvas, c, human_color, bot_color, height, width, tokens,
                     depth
                 ),
@@ -137,14 +137,14 @@ def create_board(
         # if the value is 0, then the bot starts
         if rand_value == 0:
             # we get the best position for the bot
-            best_grid = minimax(tab, depth, depth, BOTVALUE, 1,
-                                tokens, width, height, nbSquareFilled)
-            pos = get_the_best_position(best_grid[1], tab, BOTVALUE)
+            best_grid = mod_minimax(tab, depth, depth, BOTVALUE, 1,
+                                    tokens, width, height, nbSquareFilled)
+            pos = vie_get_the_best_position(best_grid[1], tab, BOTVALUE)
             # we check if the position is not None, because if it is None,
             # then it means that the board is full or there is a problem with
             # the minimax algorithm... so we need to stop the game
             if pos is not None:
-                update_game_state(
+                vie_update_game_state(
                     canvas, pos[1], 0, bot_color, width, height, tokens
                 )
 
@@ -152,20 +152,20 @@ def create_board(
     elif who_starts == 0:
         # so, we will just call the minimax algorithm to get the best position
         # for the bot
-        best_grid = minimax(tab, depth, depth, BOTVALUE, 1, tokens,
-                            width, height, nbSquareFilled)
-        pos = get_the_best_position(best_grid[1], tab, BOTVALUE)
+        best_grid = mod_minimax(tab, depth, depth, BOTVALUE, 1, tokens,
+                                width, height, nbSquareFilled)
+        pos = vie_get_the_best_position(best_grid[1], tab, BOTVALUE)
         # and again, we just check to determine if the board is full or not
         # and if there is a problem with the minimax algorithm
         if pos is not None:
-            update_game_state(
+            vie_update_game_state(
                 canvas, pos[1], 0, bot_color, width, height, tokens
             )
 
     return canvas
 
 
-def update_game_state(
+def vie_update_game_state(
         canvas: Canvas,
         col: int,
         player: int,
@@ -204,7 +204,7 @@ def update_game_state(
                 # add the position to the stack
                 stack.append([row, col])
                 # check if the game is over (if there is a winner)
-                finishG = launch_game(
+                finishG = mod_launch_game(
                     tab,
                     width,
                     height,
@@ -231,7 +231,7 @@ def update_game_state(
                 break
 
 
-def fill_cell(
+def vie_fill_cell(
         canvas,
         col,
         human_color: str,
@@ -270,8 +270,8 @@ def fill_cell(
         # if there is still a place to play
         if tab[0][col] == -1:
             # update the game's board with the human's position
-            update_game_state(canvas, col, 1, human_color, width,
-                              height, tokens)
+            vie_update_game_state(canvas, col, 1, human_color, width,
+                                  height, tokens)
             tourJeu += 1
         else:
             return
@@ -299,9 +299,9 @@ def fill_cell(
             # position = minimax_with_move(tab, depth, True,
             #                              BOTVALUE, height, width, tokens,
             #                              nbSquareFilled, stack)
-            best_grid = minimax(tab, depth, depth, BOTVALUE, 1,
-                                tokens, width, height, nbSquareFilled)
-            position = get_the_best_position(best_grid[1], tab, BOTVALUE)
+            best_grid = mod_minimax(tab, depth, depth, BOTVALUE, 1,
+                                    tokens, width, height, nbSquareFilled)
+            position = vie_get_the_best_position(best_grid[1], tab, BOTVALUE)
             # print(f"best_grid calculé : \n{np.array(best_grid[1])}")
             # print(f"best_position calculé : {position}")
             # print(f"stack  :  {stack}")
@@ -311,7 +311,7 @@ def fill_cell(
             # if the position is not None
             if position is not None:
                 # actualize the game's board with the bot's position
-                update_game_state(
+                vie_update_game_state(
                     canvas, position[1], 0, bot_color, width, height,
                     tokens
                 )
@@ -320,8 +320,8 @@ def fill_cell(
                 tourJeu += 1
 
 
-def come_back_func(canvas: Canvas, human_color: str,
-                   bot_color: str, height: int) -> None:
+def vie_come_back_func(canvas: Canvas, human_color: str,
+                       bot_color: str, height: int) -> None:
     """
     @brief This function come back to the previous position
     :param canvas:  the canvas where the game is played on
@@ -336,7 +336,7 @@ def come_back_func(canvas: Canvas, human_color: str,
     global nbSquareFilled
     global finishG
     # get the last position played
-    old_position: Pos_t = peek(stack)
+    old_position: Pos_t = mod_peek(stack)
 
     if old_position is not None:
         # we actualize the game's board by deleting the last position played
@@ -356,14 +356,14 @@ def come_back_func(canvas: Canvas, human_color: str,
         # we push the values of the grid in the reversed grid at the bottom of
         # each column of the grid... hence the start at the bottom of the grid
 
-        tab = gravity_fall_func(tab, height)
+        tab = vie_gravity_fall_func(tab, height)
 
         # we actualize the game's board based on the modified grid
 
-        modify_board(canvas, len(tab), len(tab[0]), human_color, bot_color)
+        vie_modify_board(canvas, len(tab), len(tab[0]), human_color, bot_color)
 
 
-def best_position_func(
+def vie_best_position_func(
         canvas: Canvas,
         width: int,
         height: int,
@@ -395,13 +395,13 @@ def best_position_func(
                                               "match nul")
             return
 
-        best_grid = minimax(tab, depth, depth, HUMANVALUE, 1,
-                            tokens, width, height, nbSquareFilled)
+        best_grid = mod_minimax(tab, depth, depth, HUMANVALUE, 1,
+                                tokens, width, height, nbSquareFilled)
         # print(f"la grille de la best position : {best_grid[1]}")
-        pos = get_the_best_position(best_grid[1], tab, HUMANVALUE)
+        pos = vie_get_the_best_position(best_grid[1], tab, HUMANVALUE)
         if pos is not None:
             # update the game's board with the best position for the human
-            update_game_state(
+            vie_update_game_state(
                 canvas,
                 pos[1],
                 1,
@@ -427,18 +427,18 @@ def best_position_func(
     if finishG:
         if nbSquareFilled < height * width:
 
-            best_grid = minimax(tab, depth, depth, BOTVALUE,
-                                1, tokens,
-                                width, height, nbSquareFilled)
-            pos = get_the_best_position(best_grid[1], tab, BOTVALUE)
+            best_grid = mod_minimax(tab, depth, depth, BOTVALUE,
+                                    1, tokens,
+                                    width, height, nbSquareFilled)
+            pos = vie_get_the_best_position(best_grid[1], tab, BOTVALUE)
             if pos is not None:
-                update_game_state(
+                vie_update_game_state(
                     canvas, pos[1], 0, bot_color, width, height, tokens
                 )
             tourJeu += 1
 
 
-def reverse_board(
+def vie_reverse_board(
         canvas: Canvas, height: int, width: int, humancolor: str, botcolor: str
 ) -> None:
     """
@@ -453,14 +453,14 @@ def reverse_board(
     global stack
     global tab
     # we reverse the stack
-    stack = refresh_stack_for_reversed_board(stack, height)
+    stack = vie_refresh_stack_for_reversed_board(stack, height)
     # we reverse the grid
-    tab = refresh_grid_for_reversed_board(tab, height)
+    tab = vie_refresh_grid_for_reversed_board(tab, height)
     # we actualize the game's board based on the reversed grid
-    modify_board(canvas, height, width, humancolor, botcolor)
+    vie_modify_board(canvas, height, width, humancolor, botcolor)
 
 
-def refresh_grid_for_reversed_board(grid: Grid_t, height: int) -> Grid_t:
+def vie_refresh_grid_for_reversed_board(grid: Grid_t, height: int) -> Grid_t:
     """
     @brief This function refresh the grid for the reversed board
     :param grid: the grid to refresh
@@ -472,13 +472,13 @@ def refresh_grid_for_reversed_board(grid: Grid_t, height: int) -> Grid_t:
     # We call the gravity_fall_func function to push the values in the bottom,
     # like we were applying a gravity on the grid
 
-    reversed_grid = gravity_fall_func(grid, height)
+    reversed_grid = vie_gravity_fall_func(grid, height)
 
     return reversed_grid
 
 
-def refresh_stack_for_reversed_board(pile: StackPos_t,
-                                     height: int) -> StackPos_t:
+def vie_refresh_stack_for_reversed_board(pile: StackPos_t,
+                                         height: int) -> StackPos_t:
     """
     @brief This function refresh the stack for the reversed board
     :param pile: the stack to refresh
@@ -495,7 +495,7 @@ def refresh_stack_for_reversed_board(pile: StackPos_t,
     return refreshed_stack
 
 
-def modify_board(
+def vie_modify_board(
         canvas: Canvas, height: int, width: int, human_color: str,
         bot_color: str
 ) -> None:
@@ -522,8 +522,8 @@ def modify_board(
                                   fill=f"{bot_color}")
 
 
-def get_the_best_position(best_board: Grid_t, board: Grid_t,
-                          player: int) -> Pos_t:
+def vie_get_the_best_position(best_board: Grid_t, board: Grid_t,
+                              player: int) -> Pos_t:
     for row in range(len(best_board)):
         for col in range(len(best_board[row])):
             if best_board[row][col] != board[row][col]:
@@ -531,7 +531,7 @@ def get_the_best_position(best_board: Grid_t, board: Grid_t,
                     return [row, col]
 
 
-def gravity_fall_func(old_grid: Grid_t, height: int) -> Grid_t:
+def vie_gravity_fall_func(old_grid: Grid_t, height: int) -> Grid_t:
     # we create a new grid that will be the reversed grid
     reversed_grid = [[-1] * len(old_grid[0]) for _ in range(height)]
 

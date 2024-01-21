@@ -32,7 +32,7 @@ def init_game():
 
     # Set the window's size
     window.minsize(width=WINDOWWIDTH, height=WINDOWHEIGHT)
-    game_config_frame = vue.init_config_frame(window)
+    game_config_frame = vue.vie_init_config_frame(window)
 
     # Calculate the position of the window on the screen
     screen_width = window.winfo_screenwidth()
