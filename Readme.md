@@ -31,7 +31,6 @@ user.
 ### Authors
 
 - Selly MEDEWOU
-- Jeremie YANG
 
 ### Import
 
