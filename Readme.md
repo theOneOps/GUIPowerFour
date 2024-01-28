@@ -28,6 +28,10 @@ to use bonuses/power-ups during gameplay when competing against a bot with
 significant analytical capability, depending on the depth parameter set by the
 user.
 
+### Authors
+
+- Selly MEDEWOU
+
 ### Import
 
 This program uses the following external modules:
@@ -67,9 +71,15 @@ use the following command:
 
 ##### On Windows : just execute this line of code:
 
+Firstly go to the directory where the `install.bat` is located, and then run
+this command :
+
 `.\install.bat`
 
 ##### On Linux : just execute this line of code:
+
+Firstly, go to the directory where the `install.sh` is located, and then run
+this command :
 
 `sh install.sh`
 
