@@ -57,7 +57,7 @@ def vie_create_board(
         padding: int = 5,  # Adjust this value for padding
         depth: int = 4,
 ) -> Canvas:
-    """
+    """!
     @brief Create a canvas with a grid of circles
     :param parent: the parent of the canvas
     :param width: the width of the board
@@ -174,7 +174,7 @@ def vie_update_game_state(
         height: int,
         tokens: int,
 ) -> None:
-    """
+    """!
     @brief This function update the game state
     :param canvas: the canvas where the game is played on
     :param col: the column where the player has played
@@ -241,7 +241,7 @@ def vie_fill_cell(
         tokens: int,
         depth: int,
 ) -> None:
-    """
+    """!
     @brief This function fill the cell
     :param canvas: the canvas where the game is played on
     :param col: the column where the player has played
@@ -322,7 +322,7 @@ def vie_fill_cell(
 
 def vie_come_back_func(canvas: Canvas, human_color: str,
                        bot_color: str, height: int) -> None:
-    """
+    """!
     @brief This function come back to the previous position
     :param canvas:  the canvas where the game is played on
     :param human_color: the color of the human player
@@ -372,7 +372,7 @@ def vie_best_position_func(
         bot_color: str,
         depth: int,
 ) -> None:
-    """
+    """!
     @brief This function get the best position for the bot
     :param canvas: the canvas where the game is played on
     :param width: the width of the game's board
@@ -441,7 +441,7 @@ def vie_best_position_func(
 def vie_reverse_board(
         canvas: Canvas, height: int, width: int, humancolor: str, botcolor: str
 ) -> None:
-    """
+    """!
     @brief This function reverse the board
     :param canvas: the canvas where the game is played on
     :param height: the height of the game's board
@@ -461,7 +461,7 @@ def vie_reverse_board(
 
 
 def vie_refresh_grid_for_reversed_board(grid: Grid_t, height: int) -> Grid_t:
-    """
+    """!
     @brief This function refresh the grid for the reversed board
     :param grid: the grid to refresh
     :param height: the height of the game's board
@@ -479,7 +479,7 @@ def vie_refresh_grid_for_reversed_board(grid: Grid_t, height: int) -> Grid_t:
 
 def vie_refresh_stack_for_reversed_board(pile: StackPos_t,
                                          height: int) -> StackPos_t:
-    """
+    """!
     @brief This function refresh the stack for the reversed board
     :param pile: the stack to refresh
     :param height: the height of the game's board
@@ -499,7 +499,7 @@ def vie_modify_board(
         canvas: Canvas, height: int, width: int, human_color: str,
         bot_color: str
 ) -> None:
-    """
+    """!
     @brief This function modify the game's board
     :param canvas: the canvas where the game is played on
     :param height: the height of the game's board
@@ -524,14 +524,34 @@ def vie_modify_board(
 
 def vie_get_the_best_position(best_board: Grid_t, board: Grid_t,
                               player: int) -> Pos_t:
+    """!
+    @brief This function get the best position for the bot
+    :param best_board: the board that contains the current game's state with
+    the best position possible for the player
+    :param board: the current game's state
+    :param player: the player we want to get the best position for
+    :return: the best position for the player
+    """
     for row in range(len(best_board)):
         for col in range(len(best_board[row])):
+            ## we check if the value of the best board is different from the
+            # value of the board
+
             if best_board[row][col] != board[row][col]:
+                # if the value of the best board is equal to the player
                 if best_board[row][col] == player:
+                    # then we have found the best position for the player,
+                    # so we return it
                     return [row, col]
 
 
 def vie_gravity_fall_func(old_grid: Grid_t, height: int) -> Grid_t:
+    """!
+    @brief This function apply a gravity on the grid
+    :param old_grid: the grid to apply the gravity on
+    :param height: the height of the game's board
+    :return: the grid with the gravity applied on
+    """
     # we create a new grid that will be the reversed grid
     reversed_grid = [[-1] * len(old_grid[0]) for _ in range(height)]
 

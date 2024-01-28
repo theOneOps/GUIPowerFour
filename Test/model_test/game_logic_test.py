@@ -211,20 +211,20 @@ class MyCoreTest(unittest.TestCase):
         ]
         # testing the tourJeu value to match player's round
 
-        # human's tour
+        # human's turn
         self.assertFalse(model.mod_launch_game(grid, 5, 5,
                                                8, 5,
                                                True, [0, 0]))
-        # bot's tour
+        # bot's turn
         self.assertFalse(model.mod_launch_game(grid, 5, 5,
                                                5, 5,
                                                True, [0, 4]))
 
-        # human's tour
+        # human's turn
         self.assertTrue(model.mod_launch_game(grid, 5, 5,
                                               2, 5,
                                               True, [1, 1]))
-        # Bot's tour
+        # Bot's turn
         self.assertTrue(model.mod_launch_game(grid, 5, 5,
                                               17, 5,
                                               True, [0, 1]))

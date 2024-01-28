@@ -2,7 +2,7 @@
 ## The motor file contains the main function to launch the program
 
 
-"""
+"""!
 @file motor.py
 @desc This file contains the main function to launch the program
 
@@ -23,9 +23,10 @@ PINK: str = "#255369"
 
 
 def init_game():
-    """
-    @brief This function initializes the game
-    :return:
+    """!
+    @brief This function initializes the game, with the creation of the window
+    and the configuration frame
+    :return: None
     """
     # Create the window
     window = Tk()

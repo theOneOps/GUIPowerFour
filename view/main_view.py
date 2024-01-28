@@ -46,7 +46,7 @@ TITLE_COLOR: str = "goldenrod"
 
 
 def vie_init_config_frame(window) -> Frame:
-    """
+    """!
     @brief This function initialize create the first page of the game, the
     configuration page
     :param window:  the window where the frame will be displayed
@@ -147,7 +147,7 @@ def vie_init_config_frame(window) -> Frame:
     # the function that will be called when the level's spinbox value will
     # change
     def change_value_level() -> None:
-        """
+        """!
         @brief This function will be called when the level's spinbox value
         :return:
         """
@@ -158,7 +158,7 @@ def vie_init_config_frame(window) -> Frame:
     # the function that will be called when the width's spinbox value will
     # change
     def change_value_width() -> None:
-        """
+        """!
         @brief This function will be called when the width's spinbox value
         :return: None
         """
@@ -337,10 +337,9 @@ def vie_init_config_frame(window) -> Frame:
 
 # SECOND PAGE
 def vie_define_game_play(window) -> Frame:
-    """
+    """!
     @brief This function initialize create the second page of the game, the
     game's page, with the game's board, the trump's buttons and others widgets
-
     :param window: the window where the frame will be displayed
     :return: the frame with all the widgets needed
     """
@@ -498,7 +497,7 @@ def vie_define_game_play(window) -> Frame:
     label_come_back_count.config(padx=5)
 
     def increment_count(string: str) -> None:
-        """
+        """!
         @brief This function increment the number of times a trump has been
         :param string: the name of the trump
         :return: None
@@ -588,7 +587,7 @@ def vie_define_game_play(window) -> Frame:
 
 
 def vie_help_function(number: int) -> None:
-    """
+    """!
     @brief This function display the help of the game
     :param number: the number of the help to display (0 for the game's rule
     and 1 for the game's configuration)

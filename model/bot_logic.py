@@ -17,7 +17,7 @@ from .game_types import Grid_t, Pos_t, StackPos_t
 
 def mod_get_random_position(tab: Grid_t, height: int,
                             width: int) -> Pos_t:
-    """
+    """!
     @brief get a random position in the grid
     :param tab: the 2D array representing the grid
     :param height: the height of the grid
@@ -42,7 +42,7 @@ def mod_get_random_position(tab: Grid_t, height: int,
 
 
 def mod_match_null(height: int, width: int, nbsquarefilled: int) -> bool:
-    """
+    """!
     @brief check if the grid is full
     :param height: the height of the grid
     :param width: the width of the grid
@@ -55,7 +55,7 @@ def mod_match_null(height: int, width: int, nbsquarefilled: int) -> bool:
 
 
 def mod_positions_possibles(grid: Grid_t) -> list[Pos_t]:
-    """
+    """!
     @brief get all the possible positions
     :param grid: the 2D array representing the grid
     :return: the list of all the possible positions
@@ -83,7 +83,7 @@ def mod_positions_possibles(grid: Grid_t) -> list[Pos_t]:
 
 def mod_evaluate(grid: Grid_t, player: int, max_player: int, max_length: int) \
         -> int:
-    """
+    """!
     @brief evaluate the grid
     :param grid: the 2D array representing the grid
     :param player: the player to check (0 or 1)
@@ -129,7 +129,7 @@ def mod_minimax(grid: Grid_t, truly_depth: int, depth: int, player: int,
                 height: int, nbsquarefilled: int, previous_player: int = -1,
                 pos: Pos_t
                 = None) -> (int, Grid_t):
-    """
+    """!
     @brief minimax algorithm
     :param grid: the 2D array representing the grid
     :param truly_depth: the depth of the tree
@@ -261,7 +261,7 @@ def mod_minimax(grid: Grid_t, truly_depth: int, depth: int, player: int,
 
 
 def mod_evaluate_horizontal(grid: Grid_t, player: int, length: int) -> int:
-    """
+    """!
     @brief evaluate the grid in horizontal
     :param grid: the 2D array representing the grid
     :param player: the player to check (0 or 1)
@@ -310,7 +310,7 @@ def mod_evaluate_horizontal(grid: Grid_t, player: int, length: int) -> int:
 
 
 def mod_evaluate_vertical(grid: Grid_t, player: int, length: int) -> int:
-    """
+    """!
     @brief evaluate the grid in vertical
     :param grid: the 2D array representing the grid
     :param player: the player to check (0 or 1)
@@ -334,7 +334,7 @@ def mod_evaluate_vertical(grid: Grid_t, player: int, length: int) -> int:
 
 
 def mod_evaluate_diagonal(grid: Grid_t, player: int, length: int) -> int:
-    """
+    """!
     @brief evaluate the grid in diagonal
     :param grid: the 2D array representing the grid
     :param player: the player to check (0 or 1)
@@ -377,7 +377,7 @@ def mod_evaluate_diagonal(grid: Grid_t, player: int, length: int) -> int:
 def mod_evaluate_sequence_diagonal(grid: Grid_t, sequence: list, player: int,
                                    start_row: int, start_col: int,
                                    direction: int):
-    """
+    """!
     @brief evaluate the sequence in diagonal
     :param grid: the 2D array representing the grid
     :param sequence:

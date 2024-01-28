@@ -23,7 +23,7 @@ BOTVALUE: int = 0
 
 # vérifier si la position jouée est valide ou pas ...
 def mod_valid_coord(x: int, y: int, width: int, height: int) -> bool:
-    """
+    """!
     @brief Verify if the position played is valid or not
     :param x: the x position to check between 0 and width
     :param y: the y position to check between 0 and height
@@ -44,7 +44,7 @@ def mod_finish_range_horizontal(
         width: int,
         height: int,
 ) -> bool:
-    """
+    """!
     @brief check if a range of 5 tokens is reached in horizontal
     :param player: the player to check (0 or 1)
     :param posx: the x position to check
@@ -95,7 +95,7 @@ def mod_finish_range_vertical(
         width: int,
         height: int,
 ) -> bool:
-    """
+    """!
     @brief check if a range of 5 tokens is reached in vertical
     :param player: the player to check (0 or 1)
     :param posx: the x position to check
@@ -142,7 +142,7 @@ def mod_finish_range_haut_gauche(
         width: int,
         height: int,
 ) -> bool:
-    """
+    """!
     @brief check if a range of 5 tokens is reached in left diagonal
     :param player: the player to check (0 or 1)
     :param posx: the x position to check
@@ -192,7 +192,7 @@ def mod_finish_range_bas_gauche(
         width: int,
         height: int,
 ) -> bool:
-    """
+    """!
     @brief check if a range of 5 tokens is reached in right diagonal
     :param player: the player to check (0 or 1)
     :param posx: the x position to check
@@ -228,7 +228,7 @@ def mod_finish_range_in_all_directions(
         player: int, x: int, y: int, tab: Grid_t, token: int, width: int,
         height: int
 ) -> bool:
-    """
+    """!
     @brief check if a range of 5 tokens is reached in all directions
     :param player: the player to check (0 or 1)
     :param x: the x position to check
@@ -265,7 +265,7 @@ def mod_play_bot(
         height: int,
         the_pos: Pos_t,
 ) -> bool:
-    """
+    """!
     @brief check if the bot has won
     :param tab: the 2D array of the board
     :param player: the bot value
@@ -298,7 +298,7 @@ def mod_play_human(
         width: int,
         height: int,
 ) -> bool:
-    """
+    """!
     @brief check if the human has won
     :param tab: the 2D array of the board
     :param player: the human value
@@ -326,7 +326,7 @@ def mod_launch_game(
         finishgame: bool,
         the_pos: Pos_t,
 ) -> bool:
-    """
+    """!
     @brief a boolean that says if the game is finished or
     not (if the bot wins or the human wins)
     :param tab: the 2D array of the board
@@ -358,7 +358,7 @@ def mod_launch_game(
 
 
 def mod_peek(stack: StackPos_t) -> Pos_t:
-    """
+    """!
     @brief return the last element of the stack
     :param stack: the stack of positions played
     :return: the last element of the stack

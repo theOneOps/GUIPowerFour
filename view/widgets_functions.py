@@ -27,7 +27,7 @@ def vie_define_spinbox(
         value_var: IntVar,
         wrap_: bool = True,
 ) -> Spinbox:
-    """
+    """!
     @brief This function create a spinbox
     :param frameparent: the frame where the spinbox will be
     :param func: the function that will be called when the spinbox value change
@@ -62,7 +62,7 @@ def vie_define_frame(
         pad: int = FRAMEPAD,
         columnspan: bool = False,
 ) -> Frame:
-    """
+    """!
     @brief This function create a frame
     :param root: root of the frame
     :param col: the column where the frame will be
@@ -92,7 +92,7 @@ def vie_define_lb_frame(
         pad: int = FRAMEPAD,
         columnspan: bool = False,
 ) -> LabelFrame:
-    """
+    """!
     @brief This function create a label frame
     :param root: root of the label frame
     :param col: the column where the label frame will be
@@ -124,7 +124,7 @@ def vie_define_label(
         bg: str = PINK,
         fill: str = "white",
 ) -> Label:
-    """
+    """!
     @brief This function create a label
     :param bg: the background color of the label
     :param parent: the parent of the label
@@ -152,7 +152,7 @@ def vie_define_radio(
         col: int,
         row: int
 ) -> Radiobutton:
-    """
+    """!
     @brief This function create a radio button
     :param parent: the parent of the radio button
     :param function: the function that will be called when the radio button is
@@ -182,7 +182,7 @@ def vie_define_radio(
 
 # function for the radioButton's function (This will change later)
 def vie_change_radio_value(value: IntVar) -> None:
-    """
+    """!
     @brief This function is the function that will be called when the radio
     button got clicked
     :param value: the value of the radio button
@@ -206,7 +206,7 @@ def vie_define_button(
         anchor: str = "center",
         bg: str = "#f1f1f1",
 ) -> Button:
-    """
+    """!
     @brief This function create a button
     :param color: the color of the text in the button
     :param font_size: the size of the font of the button

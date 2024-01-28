@@ -28,11 +28,6 @@ to use bonuses/power-ups during gameplay when competing against a bot with
 significant analytical capability, depending on the depth parameter set by the
 user.
 
-### Authors
-
-- Selly MEDEWOU
-- Jeremie YANG
-
 ### Import
 
 This program uses the following external modules:
